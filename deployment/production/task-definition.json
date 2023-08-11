@@ -86,7 +86,13 @@
         "timeout": 30,
         "retries": 3,
         "startPeriod": 60
-      }
+      },
+      "dependsOn": [
+        {
+          "containerName": "webservice",
+          "condition": "HEALTHY"
+        }
+      ]
     },
     {
       "name": "sidekiq",
@@ -109,7 +115,13 @@
           "awslogs-stream-prefix": "ecs"
         },
         "secretOptions": []
-      }
+      },
+      "dependsOn": [
+        {
+          "containerName": "webservice",
+          "condition": "HEALTHY"
+        }
+      ]
     }
   ],
   "family": "electnow-mastodon-production",
