@@ -156,7 +156,7 @@
   "compatibilities": ["EC2", "FARGATE"],
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
-  "memory": "2048",
+  "memory": "6144",
   "ephemeralStorage": {
     "sizeInGiB": 21
   },
