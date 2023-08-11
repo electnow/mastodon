@@ -15,6 +15,8 @@
       ],
       "essential": true,
       "command": [
+        "bash",
+        "-c",
         "bundle exec rails db:migrate && bundle exec rails s -p 3000"
       ],
       "environmentFiles": [
@@ -58,7 +60,7 @@
         }
       ],
       "essential": true,
-      "command": ["node ./streaming"],
+      "command": ["bash", "-c", "node ./streaming"],
       "environmentFiles": [
         {
           "value": "arn:aws:s3:::mastodon-env-files/production.env",
@@ -91,7 +93,7 @@
       "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-production:latest",
       "cpu": 0,
       "essential": true,
-      "command": ["bundle exec sidekiq"],
+      "command": ["bash", "-c", "bundle exec sidekiq"],
       "environmentFiles": [
         {
           "value": "arn:aws:s3:::mastodon-env-files/production.env",
