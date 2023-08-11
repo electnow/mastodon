@@ -4,17 +4,19 @@ on:
     branches:
       - 'dev'
       - 'release**'
-      - '**test-ci**'
+      - 'test-ci'
   workflow_dispatch:
 
 env:
   # select environment based on the branch
-  ENVIRONMENT: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || (github.ref == 'refs/heads/dev' && 'staging') || 'developer' }}
+  ENVIRONMENT: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || ((github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/test-ci') && 'staging') || 'developer' }}
 
 jobs:
   setup-env:
     name: Setup Environment
     runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: ${{ vars.ENVIRONMENT }}
     steps:
       - name: Check environment name
         run: echo "environment=$ENVIRONMENT" | tee $GITHUB_OUTPUT
@@ -25,7 +27,7 @@ jobs:
 
     # set environment of workflow based on branch
     environment:
-      name: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || (github.ref == 'refs/heads/dev' && 'staging') || 'developer' }}
+      name: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || ((github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/test-ci') && 'staging') || 'developer' }}
 
     steps:
       - name: Checkout code
