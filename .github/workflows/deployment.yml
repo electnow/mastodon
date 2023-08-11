@@ -1,0 +1,78 @@
+name: Deploy Mastodon to AWS Fargate
+on:
+  push:
+    branches:
+      - 'dev'
+      - 'release**'
+      - '**test-ci**'
+  workflow_dispatch:
+
+env:
+  # select environment based on the branch
+  ENVIRONMENT: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || (github.ref == 'refs/heads/dev' && 'staging') || 'developer' }}
+
+jobs:
+  setup-env:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check environment name
+        run: echo "environment=$ENVIRONMENT" | tee $GITHUB_OUTPUT
+  deploy:
+    name: Deploy Fargate
+    runs-on: ubuntu-latest
+    needs: setup-env
+
+    # set environment of workflow based on branch
+    environment:
+      name: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || (github.ref == 'refs/heads/dev' && 'staging') || 'developer' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Selected environment of the job
+        run: echo "Environment name is ${{  job.environment }}"
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push image to Amazon ECR 🏷
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: ./.github/scripts/build_image.sh
+      - name: Fill in the new image ID in the AWS ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: deployment/${{ env.ENVIRONMENT }}/task-definition.json
+          container-name: webservice
+          image: ${{ steps.build-image.outputs.image }}
+      - name: Fill in the new image ID in the AWS ECS task definition for 2nd
+        id: task-def2
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          container-name: node-streaming
+          image: ${{ steps.build-image.outputs.image }}
+      - name: Fill in the new image ID in the AWS ECS task definition for 3rd
+        id: task-def3
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def2.outputs.task-definition }}
+          container-name: sidekiq
+          image: ${{ steps.build-image.outputs.image }}
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def2.outputs.task-definition }}
+          cluster: ${{ vars.CLUSTER_NAME }}
+          service: mastodon
+          wait-for-service-stability: true

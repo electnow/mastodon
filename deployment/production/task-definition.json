@@ -1,0 +1,167 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "webservice",
+      "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-production:latest",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "webservice-3000-tcp",
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "command": [
+        "bundle exec rails db:migrate && bundle exec rails s -p 3000"
+      ],
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::mastodon-env-files/production.env",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/electnow-mastodon/production/webservice",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3000/api/v1/instance || exit 1"
+        ],
+        "interval": 60,
+        "timeout": 30,
+        "retries": 3,
+        "startPeriod": 60
+      }
+    },
+    {
+      "name": "node-streaming",
+      "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-production:latest",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "node-streaming-4000-tcp",
+          "containerPort": 4000,
+          "hostPort": 4000,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "command": ["node ./streaming"],
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::mastodon-env-files/production.env",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/electnow-mastodon-production/node-streaming",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3000/api/v1/streaming/health || exit 1"
+        ],
+        "interval": 60,
+        "timeout": 30,
+        "retries": 3,
+        "startPeriod": 60
+      }
+    },
+    {
+      "name": "sidekiq",
+      "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-production:latest",
+      "cpu": 0,
+      "essential": true,
+      "command": ["bundle exec sidekiq"],
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::mastodon-env-files/production.env",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/electnow-mastodon-production/sidekiq",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      }
+    }
+  ],
+  "family": "electnow-mastodon-production",
+  "taskRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
+  "executionRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
+  "networkMode": "awsvpc",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.env-files.s3"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "ecs.capability.container-health-check"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "ecs.capability.extensible-ephemeral-storage"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "2048",
+  "memory": "4096",
+  "ephemeralStorage": {
+    "sizeInGiB": 30
+  },
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  }
+}
