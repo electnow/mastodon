@@ -1,7 +1,7 @@
 {
   "containerDefinitions": [
     {
-      "name": "app",
+      "name": "webservice",
       "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-staging:latest",
       "cpu": 0,
       "essential": true,

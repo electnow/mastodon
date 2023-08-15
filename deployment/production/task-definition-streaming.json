@@ -1,8 +1,7 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:ap-southeast-2:115278533354:task-definition/mastodon-on-aws-StreamingApiService-1DZR8HKEEKKDY:1",
   "containerDefinitions": [
     {
-      "name": "app",
+      "name": "streaming",
       "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-production:latest",
       "cpu": 0,
       "links": [],
