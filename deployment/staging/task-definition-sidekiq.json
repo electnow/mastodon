@@ -1,0 +1,67 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "app",
+      "cpu": 0,
+      "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-staging:latest",
+      "essential": true,
+      "command": ["bash", "-c", "bundle exec sidekiq"],
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::mastodon-env-files/staging.env",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/electnow-mastodon-staging/sidekiq",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-region": "ap-southeast-2"
+        }
+      }
+    }
+  ],
+  "family": "electnow-mastodon-staging",
+  "taskRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
+  "executionRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
+  "networkMode": "awsvpc",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.secrets.asm.environment-variables"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "compatibilities": ["EC2", "FARGATE"],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "1024",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  }
+}

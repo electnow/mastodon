@@ -20,14 +20,15 @@ jobs:
     steps:
       - name: Check environment name
         run: echo "environment=$ENVIRONMENT" | tee $GITHUB_OUTPUT
-  deploy:
-    name: Deploy Fargate
+
+  build-image:
+    name: Build docker image
     runs-on: ubuntu-latest
     needs: setup-env
-
-    # set environment of workflow based on branch
     environment:
       name: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || ((github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/test-ci') && 'staging') || 'developer' }}
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
 
     steps:
       - name: Checkout code
@@ -50,31 +51,103 @@ jobs:
           ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: ./.github/scripts/build_image.sh
+
+  deploy-webservice:
+    name: Deploy webservice on Fargate
+    runs-on: ubuntu-latest
+    needs: build-image
+
+    # set environment of workflow based on branch
+    environment:
+      name: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || ((github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/test-ci') && 'staging') || 'developer' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
       - name: Fill in the new image ID in the AWS ECS task definition
-        id: task-def
+        id: task-def-webservice
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: deployment/${{ env.ENVIRONMENT }}/task-definition.json
+          task-definition: deployment/${{ env.ENVIRONMENT }}/task-definition-webservice.json
           container-name: webservice
-          image: ${{ steps.build-image.outputs.image }}
-      - name: Fill in the new image ID in the AWS ECS task definition for 2nd
-        id: task-def2
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          container-name: node-streaming
-          image: ${{ steps.build-image.outputs.image }}
-      - name: Fill in the new image ID in the AWS ECS task definition for 3rd
-        id: task-def3
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def2.outputs.task-definition }}
-          container-name: sidekiq
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ needs.build-image.outputs.image  }}
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: ${{ steps.task-def2.outputs.task-definition }}
+          task-definition: ${{ steps.task-def-webservice.outputs.task-definition }}
           cluster: ${{ vars.CLUSTER_NAME }}
-          service: mastodon
+          service: webservice
+          wait-for-service-stability: true
+
+  deploy-streaming:
+    name: Deploy streaming on Fargate
+    runs-on: ubuntu-latest
+    needs: build-image
+
+    # set environment of workflow based on branch
+    environment:
+      name: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || ((github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/test-ci') && 'staging') || 'developer' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Fill in the new image ID in the AWS ECS task definition
+        id: task-def-streaming
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: deployment/${{ env.ENVIRONMENT }}/task-definition-streaming.json
+          container-name: streaming
+          image: ${{ needs.build-image.outputs.image  }}
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-streaming.outputs.task-definition }}
+          cluster: ${{ vars.CLUSTER_NAME }}
+          service: streaming
+          wait-for-service-stability: true
+
+  deploy-sidekiq:
+    name: Deploy sidekiq on Fargate
+    runs-on: ubuntu-latest
+    needs: build-image
+
+    # set environment of workflow based on branch
+    environment:
+      name: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || ((github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/test-ci') && 'staging') || 'developer' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Fill in the new image ID in the AWS ECS task definition
+        id: task-def-sidekiq
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: deployment/${{ env.ENVIRONMENT }}/task-definition-sidekiq.json
+          container-name: sidekiq
+          image: ${{ needs.build-image.outputs.image  }}
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def-sidekiq.outputs.task-definition }}
+          cluster: ${{ vars.CLUSTER_NAME }}
+          service: sidekiq
           wait-for-service-stability: true
