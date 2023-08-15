@@ -15,7 +15,7 @@
       ],
       "essential": true,
       "entryPoint": [],
-      "command": ["bash", "-c", "pm2-runtime", "./streaming"],
+      "command": ["bash", "-c", "pm2-runtime ./streaming"],
       "environmentFiles": [
         {
           "value": "arn:aws:s3:::mastodon-env-files/staging.env",
