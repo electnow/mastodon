@@ -62,6 +62,7 @@ RUN apt-get update && \
     groupadd -g "${GID}" mastodon && \
     useradd -l -u "$UID" -g "${GID}" -m -d /opt/mastodon mastodon && \
     apt-get -y --no-install-recommends install whois \
+        curl \
         wget \
         procps \
         libssl1.1 \
@@ -77,8 +78,7 @@ RUN apt-get update && \
         tzdata \
         libreadline8 \
         tini && \
-    ln -s /opt/mastodon /mastodon && \
-    npm install pm2 -g
+    ln -s /opt/mastodon /mastodon
 
 
 # Note: no, cleaning here since Debian does this automatically
