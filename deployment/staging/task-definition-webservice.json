@@ -12,11 +12,9 @@
       ],
       "portMappings": [
         {
-          "name": "webservice-3000-tcp",
           "containerPort": 3000,
           "hostPort": 3000,
-          "protocol": "tcp",
-          "appProtocol": "http"
+          "protocol": "tcp"
         }
       ],
       "environmentFiles": [
