@@ -8,7 +8,7 @@
       "command": [
         "bash",
         "-c",
-        "bundle exec rails db:migrate && bundle exec rails s -p 3000"
+        "bundle exec rails db:migrate && bundle exec rails s"
       ],
       "portMappings": [
         {
