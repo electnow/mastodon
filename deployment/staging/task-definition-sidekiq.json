@@ -18,7 +18,7 @@
           "awslogs-create-group": "true",
           "awslogs-group": "/ecs/electnow-mastodon-staging/sidekiq",
           "awslogs-stream-prefix": "ecs",
-          "awslogs-region": "ap-southeast-2"
+          "awslogs-region": "us-east-1"
         }
       }
     }
