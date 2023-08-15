@@ -37,7 +37,6 @@ RUN apt-get update && \
     bundle config set silence_root_warning true && \
     bundle install -j"$(nproc)" && \
     yarn install --pure-lockfile --production --network-timeout 600000 && \
-    npm install pm2 && \
     yarn cache clean
 
 FROM node:${NODE_VERSION}
@@ -78,7 +77,9 @@ RUN apt-get update && \
         tzdata \
         libreadline8 \
         tini && \
-    ln -s /opt/mastodon /mastodon
+    ln -s /opt/mastodon /mastodon && \
+    npm install pm2 -g
+
 
 # Note: no, cleaning here since Debian does this automatically
 # See the file /etc/apt/apt.conf.d/docker-clean within the Docker image's filesystem
