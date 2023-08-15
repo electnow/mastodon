@@ -49,7 +49,7 @@
   "executionRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
-  "cpu": "512",
+  "cpu": "1024",
   "memory": "1024",
   "runtimePlatform": {
     "cpuArchitecture": "X86_64",
