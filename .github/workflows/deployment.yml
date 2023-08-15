@@ -27,8 +27,6 @@ jobs:
     needs: setup-env
     environment:
       name: ${{ ( startsWith(github.ref, 'refs/heads/release')  && 'production') || ((github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/test-ci') && 'staging') || 'developer' }}
-    outputs:
-      image: ${{ steps.build-image.outputs.image }}
 
     steps:
       - name: Checkout code
@@ -45,7 +43,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       - name: Build, tag, and push image to Amazon ECR 🏷
-        id: build-image
+        id: build-image-docker
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
@@ -70,13 +68,16 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
       - name: Fill in the new image ID in the AWS ECS task definition
         id: task-def-webservice
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: deployment/${{ env.ENVIRONMENT }}/task-definition-webservice.json
           container-name: webservice
-          image: ${{ needs.build-image.outputs.image  }}
+          image: ${{steps.login-ecr.outputs.registry}}/${{vars.ECR_REPOSITORY}}:${{github.sha}}
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
@@ -103,13 +104,16 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
       - name: Fill in the new image ID in the AWS ECS task definition
         id: task-def-streaming
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: deployment/${{ env.ENVIRONMENT }}/task-definition-streaming.json
           container-name: streaming
-          image: ${{ needs.build-image.outputs.image  }}
+          image: ${{steps.login-ecr.outputs.registry}}/${{vars.ECR_REPOSITORY}}:${{github.sha}}
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
@@ -136,14 +140,16 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
-
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
       - name: Fill in the new image ID in the AWS ECS task definition
         id: task-def-sidekiq
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: deployment/${{ env.ENVIRONMENT }}/task-definition-sidekiq.json
           container-name: sidekiq
-          image: ${{ needs.build-image.outputs.image  }}
+          image: ${{steps.login-ecr.outputs.registry}}/${{vars.ECR_REPOSITORY}}:${{github.sha}}
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
