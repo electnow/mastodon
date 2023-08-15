@@ -23,40 +23,10 @@
       }
     }
   ],
-  "family": "electnow-mastodon-production",
+  "family": "electnow-mastodon-production-sidekiq",
   "taskRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
   "executionRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
   "networkMode": "awsvpc",
-  "requiresAttributes": [
-    {
-      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-    },
-    {
-      "name": "ecs.capability.execution-role-awslogs"
-    },
-    {
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-    },
-    {
-      "name": "ecs.capability.secrets.asm.environment-variables"
-    },
-    {
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
-    },
-    {
-      "name": "com.amazonaws.ecs.capability.task-iam-role"
-    },
-    {
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-    },
-    {
-      "name": "ecs.capability.task-eni"
-    },
-    {
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
-    }
-  ],
-  "compatibilities": ["EC2", "FARGATE"],
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
   "memory": "1024",
