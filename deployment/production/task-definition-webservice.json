@@ -1,0 +1,58 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "webservice",
+      "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-production:latest",
+      "cpu": 0,
+      "essential": true,
+      "command": [
+        "bash",
+        "-c",
+        "bundle exec rails db:migrate && bundle exec rails s"
+      ],
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::mastodon-env-files/production.env",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/electnow-mastodon-production/webservice",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-region": "ap-southeast-2"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1"
+        ],
+        "interval": 60,
+        "timeout": 30,
+        "retries": 3,
+        "startPeriod": 60
+      }
+    }
+  ],
+  "family": "electnow-mastodon-production-webservice",
+  "taskRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
+  "executionRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "4096",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  }
+}
