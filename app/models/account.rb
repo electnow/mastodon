@@ -50,6 +50,7 @@
 #  trendable                     :boolean
 #  reviewed_at                   :datetime
 #  requested_review_at           :datetime
+#  electorate_id                 :integer
 #
 
 class Account < ApplicationRecord
