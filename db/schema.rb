@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_23_003005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "account_aliases", force: :cascade do |t|
     t.bigint "account_id"
@@ -185,6 +186,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.boolean "trendable"
     t.datetime "reviewed_at", precision: nil
     t.datetime "requested_review_at", precision: nil
+    t.integer "electorate_id"
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"
@@ -502,6 +504,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.string "languages", array: true
     t.index ["account_id", "target_account_id"], name: "index_follows_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_follows_on_target_account_id"
+  end
+
+  create_table "geography_electorates", force: :cascade do |t|
+    t.string "name"
+    t.string "postal"
+    t.bigint "geography_state_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["geography_state_id"], name: "index_geography_electorates_on_geography_state_id"
+  end
+
+  create_table "geography_states", force: :cascade do |t|
+    t.string "name"
+    t.string "postal"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "identities", force: :cascade do |t|
@@ -903,6 +921,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.index ["var"], name: "index_site_uploads_on_var", unique: true
   end
 
+  create_table "spatial_ref_sys", primary_key: "srid", id: :integer, default: nil, force: :cascade do |t|
+    t.string "auth_name", limit: 256
+    t.integer "auth_srid"
+    t.string "srtext", limit: 2048
+    t.string "proj4text", limit: 2048
+    t.check_constraint "srid > 0 AND srid <= 998999", name: "spatial_ref_sys_srid_check"
+  end
+
   create_table "status_edits", force: :cascade do |t|
     t.bigint "status_id", null: false
     t.bigint "account_id"
@@ -1164,6 +1190,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
   add_foreign_key "account_warnings", "accounts", on_delete: :nullify
   add_foreign_key "account_warnings", "reports", on_delete: :cascade
   add_foreign_key "accounts", "accounts", column: "moved_to_account_id", on_delete: :nullify
+  add_foreign_key "accounts", "geography_electorates", column: "electorate_id", name: "fk_accounts_electorates", on_delete: :cascade
   add_foreign_key "admin_action_logs", "accounts", on_delete: :cascade
   add_foreign_key "announcement_mutes", "accounts", on_delete: :cascade
   add_foreign_key "announcement_mutes", "announcements", on_delete: :cascade
@@ -1202,6 +1229,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
   add_foreign_key "follow_requests", "accounts", name: "fk_76d644b0e7", on_delete: :cascade
   add_foreign_key "follows", "accounts", column: "target_account_id", name: "fk_745ca29eac", on_delete: :cascade
   add_foreign_key "follows", "accounts", name: "fk_32ed1b5560", on_delete: :cascade
+  add_foreign_key "geography_electorates", "geography_states"
   add_foreign_key "identities", "users", name: "fk_bea040f377", on_delete: :cascade
   add_foreign_key "imports", "accounts", name: "fk_6db1b6e408", on_delete: :cascade
   add_foreign_key "invites", "users", on_delete: :cascade
@@ -1361,4 +1389,91 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
   SQL
   add_index "follow_recommendations", ["account_id"], name: "index_follow_recommendations_on_account_id", unique: true
 
+  create_view "geography_columns", sql_definition: <<-SQL
+      SELECT current_database() AS f_table_catalog,
+      n.nspname AS f_table_schema,
+      c.relname AS f_table_name,
+      a.attname AS f_geography_column,
+      postgis_typmod_dims(a.atttypmod) AS coord_dimension,
+      postgis_typmod_srid(a.atttypmod) AS srid,
+      postgis_typmod_type(a.atttypmod) AS type
+     FROM pg_class c,
+      pg_attribute a,
+      pg_type t,
+      pg_namespace n
+    WHERE ((t.typname = 'geography'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"])) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));
+  SQL
+  create_view "geometry_columns", sql_definition: <<-SQL
+      SELECT (current_database())::character varying(256) AS f_table_catalog,
+      n.nspname AS f_table_schema,
+      c.relname AS f_table_name,
+      a.attname AS f_geometry_column,
+      COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,
+      COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,
+      (replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text))::character varying(30) AS type
+     FROM ((((((pg_class c
+       JOIN pg_attribute a ON (((a.attrelid = c.oid) AND (NOT a.attisdropped))))
+       JOIN pg_namespace n ON ((c.relnamespace = n.oid)))
+       JOIN pg_type t ON ((a.atttypid = t.oid)))
+       LEFT JOIN ( SELECT s.connamespace,
+              s.conrelid,
+              s.conkey,
+              replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) AS type
+             FROM pg_constraint s
+            WHERE (s.consrc ~~* '%geometrytype(% = %'::text)) st ON (((st.connamespace = n.oid) AND (st.conrelid = c.oid) AND (a.attnum = ANY (st.conkey)))))
+       LEFT JOIN ( SELECT s.connamespace,
+              s.conrelid,
+              s.conkey,
+              (replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text))::integer AS ndims
+             FROM pg_constraint s
+            WHERE (s.consrc ~~* '%ndims(% = %'::text)) sn ON (((sn.connamespace = n.oid) AND (sn.conrelid = c.oid) AND (a.attnum = ANY (sn.conkey)))))
+       LEFT JOIN ( SELECT s.connamespace,
+              s.conrelid,
+              s.conkey,
+              (replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text))::integer AS srid
+             FROM pg_constraint s
+            WHERE (s.consrc ~~* '%srid(% = %'::text)) sr ON (((sr.connamespace = n.oid) AND (sr.conrelid = c.oid) AND (a.attnum = ANY (sr.conkey)))))
+    WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"])) AND (NOT (c.relname = 'raster_columns'::name)) AND (t.typname = 'geometry'::name) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));
+  SQL
+  create_view "raster_columns", sql_definition: <<-SQL
+      SELECT current_database() AS r_table_catalog,
+      n.nspname AS r_table_schema,
+      c.relname AS r_table_name,
+      a.attname AS r_raster_column,
+      COALESCE(_raster_constraint_info_srid(n.nspname, c.relname, a.attname), ( SELECT st_srid('010100000000000000000000000000000000000000'::geometry) AS st_srid)) AS srid,
+      _raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'x'::bpchar) AS scale_x,
+      _raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'y'::bpchar) AS scale_y,
+      _raster_constraint_info_blocksize(n.nspname, c.relname, a.attname, 'width'::text) AS blocksize_x,
+      _raster_constraint_info_blocksize(n.nspname, c.relname, a.attname, 'height'::text) AS blocksize_y,
+      COALESCE(_raster_constraint_info_alignment(n.nspname, c.relname, a.attname), false) AS same_alignment,
+      COALESCE(_raster_constraint_info_regular_blocking(n.nspname, c.relname, a.attname), false) AS regular_blocking,
+      _raster_constraint_info_num_bands(n.nspname, c.relname, a.attname) AS num_bands,
+      _raster_constraint_info_pixel_types(n.nspname, c.relname, a.attname) AS pixel_types,
+      _raster_constraint_info_nodata_values(n.nspname, c.relname, a.attname) AS nodata_values,
+      _raster_constraint_info_out_db(n.nspname, c.relname, a.attname) AS out_db,
+      _raster_constraint_info_extent(n.nspname, c.relname, a.attname) AS extent,
+      COALESCE(_raster_constraint_info_index(n.nspname, c.relname, a.attname), false) AS spatial_index
+     FROM pg_class c,
+      pg_attribute a,
+      pg_type t,
+      pg_namespace n
+    WHERE ((t.typname = 'raster'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"])) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));
+  SQL
+  create_view "raster_overviews", sql_definition: <<-SQL
+      SELECT current_database() AS o_table_catalog,
+      n.nspname AS o_table_schema,
+      c.relname AS o_table_name,
+      a.attname AS o_raster_column,
+      current_database() AS r_table_catalog,
+      (split_part(split_part(s.consrc, '''::name'::text, 1), ''''::text, 2))::name AS r_table_schema,
+      (split_part(split_part(s.consrc, '''::name'::text, 2), ''''::text, 2))::name AS r_table_name,
+      (split_part(split_part(s.consrc, '''::name'::text, 3), ''''::text, 2))::name AS r_raster_column,
+      (btrim(split_part(s.consrc, ','::text, 2)))::integer AS overview_factor
+     FROM pg_class c,
+      pg_attribute a,
+      pg_type t,
+      pg_namespace n,
+      pg_constraint s
+    WHERE ((t.typname = 'raster'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND ((c.relkind)::text = ANY ((ARRAY['r'::character(1), 'v'::character(1), 'm'::character(1), 'f'::character(1)])::text[])) AND (s.connamespace = n.oid) AND (s.conrelid = c.oid) AND (s.consrc ~~ '%_overview_constraint(%'::text) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));
+  SQL
 end
