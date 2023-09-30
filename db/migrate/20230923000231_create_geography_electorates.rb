@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateGeographyElectorates < ActiveRecord::Migration[7.0]
   def change
     create_table :geography_electorates do |t|
