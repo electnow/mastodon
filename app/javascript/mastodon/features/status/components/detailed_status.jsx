@@ -10,6 +10,7 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 
 import { AnimatedNumber } from 'mastodon/components/animated_number';
 import EditedTimestamp from 'mastodon/components/edited_timestamp';
+import { getHashtagBarForStatus } from 'mastodon/components/hashtag_bar';
 import { Icon }  from 'mastodon/components/icon';
 import PictureInPicturePlaceholder from 'mastodon/components/picture_in_picture_placeholder';
 
@@ -131,7 +132,7 @@ class DetailedStatus extends ImmutablePureComponent {
     } else if (attachments.getIn([0, 'type']) === 'audio') {
       return '16 / 9';
     } else {
-      return (attachments.size === 1 && attachments.getIn([0, 'meta', 'small', 'aspect'])) ? attachments.getIn([0, 'meta', 'small', 'aspect']) : '3 / 2'
+      return (attachments.size === 1 && attachments.getIn([0, 'meta', 'small', 'aspect'])) ? attachments.getIn([0, 'meta', 'small', 'aspect']) : '3 / 2';
     }
   }
 
@@ -291,6 +292,9 @@ class DetailedStatus extends ImmutablePureComponent {
       );
     }
 
+    const {statusContentProps, hashtagBar} = getHashtagBarForStatus(status);
+    const expanded = !status.get('hidden') || status.get('spoiler_text').length === 0;
+
     return (
       <div style={outerStyle}>
         <div ref={this.setRef} className={classNames('detailed-status', { compact })}>
@@ -310,9 +314,12 @@ class DetailedStatus extends ImmutablePureComponent {
             expanded={!status.get('hidden')}
             onExpandedToggle={this.handleExpandedToggle}
             onTranslate={this.handleTranslate}
+            {...statusContentProps}
           />
 
           {media}
+
+          {expanded && hashtagBar}
 
           <div className='detailed-status__meta'>
             <a className='detailed-status__datetime' href={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`} target='_blank' rel='noopener noreferrer'>

@@ -50,6 +50,7 @@
 #  trendable                     :boolean
 #  reviewed_at                   :datetime
 #  requested_review_at           :datetime
+#  indexable                     :boolean          default(FALSE), not null
 #  postal_code                   :string
 #  suburb                        :string
 #  geography_electorates_id      :bigint(8)
@@ -65,8 +66,10 @@ class Account < ApplicationRecord
     trust_level
   )
 
+  BACKGROUND_REFRESH_INTERVAL = 1.week.freeze
+
   USERNAME_RE   = /[a-z0-9_]+([a-z0-9_.-]+[a-z0-9_]+)?/i
-  MENTION_RE    = %r{(?<=^|[^/[:word:]])@((#{USERNAME_RE})(?:@[[:word:].-]+[[:word:]]+)?)}i
+  MENTION_RE    = %r{(?<![=/[:word:]])@((#{USERNAME_RE})(?:@[[:word:].-]+[[:word:]]+)?)}i
   URL_PREFIX_RE = %r{\Ahttp(s?)://[^/]+}
   USERNAME_ONLY_RE = /\A#{USERNAME_RE}\z/i
 
@@ -82,6 +85,7 @@ class Account < ApplicationRecord
   include DomainMaterializable
   include AccountMerging
   include AccountSearch
+  include AccountStatusesSearch
 
   enum protocol: { ostatus: 0, activitypub: 1 }
   enum suspension_origin: { local: 0, remote: 1 }, _prefix: true
@@ -124,10 +128,10 @@ class Account < ApplicationRecord
   scope :matches_domain, ->(value) { where(arel_table[:domain].matches("%#{value}%")) }
   scope :without_unapproved, -> { left_outer_joins(:user).merge(User.approved.confirmed).or(remote) }
   scope :searchable, -> { without_unapproved.without_suspended.where(moved_to_account_id: nil) }
-  scope :discoverable, -> { searchable.without_silenced.where(discoverable: true).left_outer_joins(:account_stat) }
+  scope :discoverable, -> { searchable.without_silenced.where(discoverable: true).joins(:account_stat) }
   scope :followable_by, ->(account) { joins(arel_table.join(Follow.arel_table, Arel::Nodes::OuterJoin).on(arel_table[:id].eq(Follow.arel_table[:target_account_id]).and(Follow.arel_table[:account_id].eq(account.id))).join_sources).where(Follow.arel_table[:id].eq(nil)).joins(arel_table.join(FollowRequest.arel_table, Arel::Nodes::OuterJoin).on(arel_table[:id].eq(FollowRequest.arel_table[:target_account_id]).and(FollowRequest.arel_table[:account_id].eq(account.id))).join_sources).where(FollowRequest.arel_table[:id].eq(nil)) }
-  scope :by_recent_status, -> { order(Arel.sql('(case when account_stats.last_status_at is null then 1 else 0 end) asc, account_stats.last_status_at desc, accounts.id desc')) }
-  scope :by_recent_sign_in, -> { order(Arel.sql('(case when users.current_sign_in_at is null then 1 else 0 end) asc, users.current_sign_in_at desc, accounts.id desc')) }
+  scope :by_recent_status, -> { includes(:account_stat).merge(AccountStat.order('last_status_at DESC NULLS LAST')).references(:account_stat) }
+  scope :by_recent_sign_in, -> { order(Arel.sql('users.current_sign_in_at DESC NULLS LAST')) }
   scope :popular, -> { order('account_stats.followers_count desc') }
   scope :by_domain_and_subdomains, ->(domain) { where(domain: Instance.by_domain_and_subdomains(domain).select(:domain)) }
   scope :not_excluded_by_account, ->(account) { where.not(id: account.excluded_from_timeline_account_ids) }
@@ -209,6 +213,12 @@ class Account < ApplicationRecord
 
   def possibly_stale?
     last_webfingered_at.nil? || last_webfingered_at <= 1.day.ago
+  end
+
+  def schedule_refresh_if_stale!
+    return unless last_webfingered_at.present? && last_webfingered_at <= BACKGROUND_REFRESH_INTERVAL.ago
+
+    AccountRefreshWorker.perform_in(rand(6.hours.to_i), id)
   end
 
   def refresh!
@@ -444,7 +454,20 @@ class Account < ApplicationRecord
         EntityCache.instance.mention(username, domain)
       end
     end
+
+    def inverse_alias(key, original_key)
+      define_method("#{key}=") do |value|
+        public_send("#{original_key}=", !ActiveModel::Type::Boolean.new.cast(value))
+      end
+
+      define_method(key) do
+        !public_send(original_key)
+      end
+    end
   end
+
+  inverse_alias :show_collections, :hide_collections
+  inverse_alias :unlocked, :locked
 
   def emojis
     @emojis ||= CustomEmoji.from_text(emojifiable_text, domain)
