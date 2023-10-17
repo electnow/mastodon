@@ -802,7 +802,6 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10)
-  activerecord-postgis-adapter
   addressable (~> 2.8)
   annotate (~> 3.2)
   aws-sdk-s3 (~> 1.123)
