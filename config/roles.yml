@@ -1,3 +1,9 @@
+leader:
+  name: Leader
+  position: 5
+  permissions:
+    - view_dashboard
+    - view_audit_log
 moderator:
   name: Moderator
   position: 10

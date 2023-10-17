@@ -2,6 +2,7 @@
 # This needs to be bookworm-slim because the Ruby image is built on bookworm-slim
 ARG NODE_VERSION="20.8-bookworm-slim"
 
+
 FROM ghcr.io/moritzheiber/ruby-jemalloc:3.2.2-slim as ruby
 FROM node:${NODE_VERSION} as build
 
@@ -63,6 +64,7 @@ RUN apt-get update && \
     groupadd -g "${GID}" mastodon && \
     useradd -l -u "$UID" -g "${GID}" -m -d /opt/mastodon mastodon && \
     apt-get -y --no-install-recommends install whois \
+        curl \
         wget \
         procps \
         libssl3 \
@@ -79,6 +81,7 @@ RUN apt-get update && \
         libreadline8 \
         tini && \
     ln -s /opt/mastodon /mastodon
+
 
 # Note: no, cleaning here since Debian does this automatically
 # See the file /etc/apt/apt.conf.d/docker-clean within the Docker image's filesystem

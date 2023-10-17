@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_07_150100) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_17_193915) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -187,9 +187,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_150100) do
     t.datetime "reviewed_at", precision: nil
     t.datetime "requested_review_at", precision: nil
     t.boolean "indexable", default: false, null: false
+    t.string "postal_code"
+    t.string "suburb"
+    t.bigint "geography_electorates_id"
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"
+    t.index ["geography_electorates_id"], name: "index_accounts_on_geography_electorates_id"
     t.index ["moved_to_account_id"], name: "index_accounts_on_moved_to_account_id", where: "(moved_to_account_id IS NOT NULL)"
     t.index ["uri"], name: "index_accounts_on_uri"
     t.index ["url"], name: "index_accounts_on_url", opclass: :text_pattern_ops, where: "(url IS NOT NULL)"
@@ -506,6 +510,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_150100) do
     t.index ["target_account_id"], name: "index_follows_on_target_account_id"
   end
 
+  create_table "geography_electorates", force: :cascade do |t|
+    t.string "name"
+    t.bigint "geography_state_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["geography_state_id"], name: "index_geography_electorates_on_geography_state_id"
+  end
+
+  create_table "geography_states", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_geography_states_on_code", unique: true
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string "provider", default: "", null: false
     t.string "uid", default: "", null: false
@@ -550,6 +570,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_150100) do
     t.integer "severity", default: 0, null: false
     t.text "comment", default: "", null: false
     t.index ["ip"], name: "index_ip_blocks_on_ip", unique: true
+  end
+
+  create_table "leader_profiles", force: :cascade do |t|
+    t.string "name"
+    t.string "note"
+    t.integer "type"
+    t.integer "level"
+    t.integer "parliament"
+    t.bigint "geography_states_id", null: false
+    t.bigint "geography_electorates_id", null: false
+    t.bigint "parties_id", null: false
+    t.bigint "account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_leader_profiles_on_account_id"
+    t.index ["geography_electorates_id"], name: "index_leader_profiles_on_geography_electorates_id"
+    t.index ["geography_states_id"], name: "index_leader_profiles_on_geography_states_id"
+    t.index ["parties_id"], name: "index_leader_profiles_on_parties_id"
   end
 
   create_table "list_accounts", force: :cascade do |t|
@@ -714,6 +752,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_150100) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["device_id"], name: "index_one_time_keys_on_device_id"
     t.index ["key_id"], name: "index_one_time_keys_on_key_id"
+  end
+
+  create_table "parties", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "pghero_space_stats", force: :cascade do |t|
@@ -1175,6 +1219,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_150100) do
   add_foreign_key "account_warnings", "accounts", on_delete: :nullify
   add_foreign_key "account_warnings", "reports", on_delete: :cascade
   add_foreign_key "accounts", "accounts", column: "moved_to_account_id", on_delete: :nullify
+  add_foreign_key "accounts", "geography_electorates", column: "geography_electorates_id", on_delete: :cascade
   add_foreign_key "admin_action_logs", "accounts", on_delete: :cascade
   add_foreign_key "announcement_mutes", "accounts", on_delete: :cascade
   add_foreign_key "announcement_mutes", "announcements", on_delete: :cascade
@@ -1213,9 +1258,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_07_150100) do
   add_foreign_key "follow_requests", "accounts", name: "fk_76d644b0e7", on_delete: :cascade
   add_foreign_key "follows", "accounts", column: "target_account_id", name: "fk_745ca29eac", on_delete: :cascade
   add_foreign_key "follows", "accounts", name: "fk_32ed1b5560", on_delete: :cascade
+  add_foreign_key "geography_electorates", "geography_states"
   add_foreign_key "identities", "users", name: "fk_bea040f377", on_delete: :cascade
   add_foreign_key "imports", "accounts", name: "fk_6db1b6e408", on_delete: :cascade
   add_foreign_key "invites", "users", on_delete: :cascade
+  add_foreign_key "leader_profiles", "accounts"
+  add_foreign_key "leader_profiles", "geography_electorates", column: "geography_electorates_id"
+  add_foreign_key "leader_profiles", "geography_states", column: "geography_states_id"
+  add_foreign_key "leader_profiles", "parties", column: "parties_id"
   add_foreign_key "list_accounts", "accounts", on_delete: :cascade
   add_foreign_key "list_accounts", "follow_requests", on_delete: :cascade
   add_foreign_key "list_accounts", "follows", on_delete: :cascade

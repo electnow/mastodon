@@ -51,6 +51,9 @@
 #  reviewed_at                   :datetime
 #  requested_review_at           :datetime
 #  indexable                     :boolean          default(FALSE), not null
+#  postal_code                   :string
+#  suburb                        :string
+#  geography_electorates_id      :bigint(8)
 #
 
 class Account < ApplicationRecord
