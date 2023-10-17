@@ -4,10 +4,10 @@ class CreateGeographyStates < ActiveRecord::Migration[7.0]
   def change
     create_table :geography_states do |t|
       t.string :name
-      t.string :postal
-      # t.st_point :region, geographic: true
+      t.string :code, unique: true
 
       t.timestamps
     end
+    add_index :geography_states, :code, unique: true
   end
 end
