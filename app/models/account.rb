@@ -50,7 +50,9 @@
 #  trendable                     :boolean
 #  reviewed_at                   :datetime
 #  requested_review_at           :datetime
-#  electorate_id                 :integer
+#  postal_code                   :string
+#  suburb                        :string
+#  geography_electorates_id      :bigint(8)
 #
 
 class Account < ApplicationRecord
