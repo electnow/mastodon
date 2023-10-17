@@ -578,16 +578,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_193915) do
     t.integer "type"
     t.integer "level"
     t.integer "parliament"
-    t.bigint "geography_states_id", null: false
-    t.bigint "geography_electorates_id", null: false
-    t.bigint "parties_id", null: false
+    t.bigint "geography_state_id", null: false
+    t.bigint "geography_electorate_id"
+    t.bigint "party_id"
     t.bigint "account_id"
+    t.string "avatar_file_name"
+    t.string "avatar_content_type"
+    t.bigint "avatar_file_size"
+    t.datetime "avatar_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_leader_profiles_on_account_id"
-    t.index ["geography_electorates_id"], name: "index_leader_profiles_on_geography_electorates_id"
-    t.index ["geography_states_id"], name: "index_leader_profiles_on_geography_states_id"
-    t.index ["parties_id"], name: "index_leader_profiles_on_parties_id"
+    t.index ["geography_electorate_id"], name: "index_leader_profiles_on_geography_electorate_id"
+    t.index ["geography_state_id"], name: "index_leader_profiles_on_geography_state_id"
+    t.index ["party_id"], name: "index_leader_profiles_on_party_id"
   end
 
   create_table "list_accounts", force: :cascade do |t|
@@ -1263,9 +1267,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_193915) do
   add_foreign_key "imports", "accounts", name: "fk_6db1b6e408", on_delete: :cascade
   add_foreign_key "invites", "users", on_delete: :cascade
   add_foreign_key "leader_profiles", "accounts"
-  add_foreign_key "leader_profiles", "geography_electorates", column: "geography_electorates_id"
-  add_foreign_key "leader_profiles", "geography_states", column: "geography_states_id"
-  add_foreign_key "leader_profiles", "parties", column: "parties_id"
+  add_foreign_key "leader_profiles", "geography_electorates"
+  add_foreign_key "leader_profiles", "geography_states"
+  add_foreign_key "leader_profiles", "parties"
   add_foreign_key "list_accounts", "accounts", on_delete: :cascade
   add_foreign_key "list_accounts", "follow_requests", on_delete: :cascade
   add_foreign_key "list_accounts", "follows", on_delete: :cascade

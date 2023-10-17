@@ -4,18 +4,22 @@
 #
 # Table name: leader_profiles
 #
-#  id                       :bigint(8)        not null, primary key
-#  name                     :string
-#  note                     :string
-#  type                     :integer
-#  level                    :integer
-#  parliament               :integer
-#  geography_states_id      :bigint(8)        not null
-#  geography_electorates_id :bigint(8)        not null
-#  parties_id               :bigint(8)        not null
-#  account_id               :bigint(8)
-#  created_at               :datetime         not null
-#  updated_at               :datetime         not null
+#  id                      :bigint(8)        not null, primary key
+#  name                    :string
+#  note                    :string
+#  type                    :integer
+#  level                   :integer
+#  parliament              :integer
+#  geography_state_id      :bigint(8)        not null
+#  geography_electorate_id :bigint(8)
+#  party_id                :bigint(8)
+#  account_id              :bigint(8)
+#  avatar_file_name        :string
+#  avatar_content_type     :string
+#  avatar_file_size        :bigint(8)
+#  avatar_updated_at       :datetime
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
 #
 class LeaderProfile < ApplicationRecord
   enum type: { senate: 0, house_of_representative: 1, house_of_assembly: 2 }
@@ -24,9 +28,10 @@ class LeaderProfile < ApplicationRecord
 
   enum parliament: { federal: 0, state: 1 }
 
-  belongs_to :geography_states
-  belongs_to :geography_electorates
-  belongs_to :parties
+  belongs_to :geography_state, class_name: 'Geography::State'
+  belongs_to :geography_electorate, class_name: 'Geography::Electorate'
+  belongs_to :party
   belongs_to :account
-  has_one_attached :avatar
+
+  include AccountAvatar
 end

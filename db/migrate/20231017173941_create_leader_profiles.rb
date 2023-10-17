@@ -8,10 +8,12 @@ class CreateLeaderProfiles < ActiveRecord::Migration[7.0]
       t.integer :type
       t.integer :level
       t.integer :parliament
-      t.references :geography_states, null: false, foreign_key: true
-      t.references :geography_electorates, null: false, foreign_key: true
-      t.references :parties, null: false, foreign_key: true
-      t.references :account, null: true, foreign_key: true
+      t.references :geography_state, null: false, foreign_key: { to_table: :geography_states }
+      t.references :geography_electorate, null: true, foreign_key: { to_table: :geography_electorates }
+      t.references :party, null: true, foreign_key: { to_table: :parties }
+      t.references :account, null: true, foreign_key: { to_table: :accounts }
+
+      t.attachment :avatar
 
       t.timestamps
     end
