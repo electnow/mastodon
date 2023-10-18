@@ -4,6 +4,7 @@ require 'sidekiq_unique_jobs/web'
 require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
+  resources :leader_profiles, path: 'leaders'
   # Paths of routes on the web app that to not require to be indexed or
   # have alternative format representations requiring separate controllers
   web_app_paths = %w(
