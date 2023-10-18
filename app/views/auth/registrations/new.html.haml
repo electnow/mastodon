@@ -28,7 +28,7 @@
   %h1.title= t("Find Your Electorate")
   
   .fields-group
-    = f.input :suburb, placeholder: t('simple_form.labels.defaults.suburb'), required: true, input_html: { 'aria-label': t('simple_form.labels.defaults.suburb'), autocomplete: 'off' }, hint: false
+    = f.input :email, placeholder: t('simple_form.labels.defaults.suburb'), required: true, input_html: { 'aria-label': t('simple_form.labels.defaults.suburb'), autocomplete: 'off' }, hint: false
   .fields-group
     = f.select :email, ["TAS"], {prompt: "Select a state"}, placeholder: t('simple_form.labels.defaults.state'), required: true, input_html: { 'aria-label': t('simple_form.labels.defaults.state'), autocomplete: 'off' }, hint: false
   .fields-group	
