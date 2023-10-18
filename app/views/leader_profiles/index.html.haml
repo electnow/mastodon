@@ -1,0 +1,19 @@
+%h1 Listing leader_profiles
+
+%table
+  %thead
+    %tr
+      %th
+      %th
+      %th
+
+  %tbody
+    - @leader_profiles.each do |leader_profile|
+      %tr
+        %td= link_to 'Show', leader_profile
+        %td= link_to 'Edit', edit_leader_profile_path(leader_profile)
+        %td= link_to 'Destroy', leader_profile, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Leader profile', new_leader_profile_path
