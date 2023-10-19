@@ -120,72 +120,32 @@ class About extends PureComponent {
         <div className='scrollable about'>
           <div className='about__header'>
             <p>Your electorate is: </p>
-            <h1>Clark</h1>
+            <h1 style="color:classic-highlight-color;">Clark</h1>
           </div>
 
 
           <Section open title={intl.formatMessage(messages.title)}>
-            {extendedDescription.get('isLoading') ? (
-              <>
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='70%' />
-              </>
-            ) : (extendedDescription.get('content')?.length > 0 ? (
-              <div
-                className='prose'
-                dangerouslySetInnerHTML={{ __html: extendedDescription.get('content') }}
-              />
-            ) : (
-              <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
-            ))}
+            <p>Population: </p>
+            <p>Average Age: </p>
+            <p>Population: </p>
+            <p>Employment Percent: </p>
+            <p>Most Common Occupation: </p>
+            <p>Most Common Employment Industry: </p>
+            <p>Most Common Education Level: </p>
+            <p>Average Family Income: </p>
+            <p>Most Common Country of Birth: </p>
+            <p>Most Common Parental Country of Birth: </p> 
+            <p>Percent English Speaking: </p> 
+            <p>Most Common Religion: </p> 
           </Section>
 
           <Section title='Federal Parliment'>
-            {!isLoading && (server.get('rules', ImmutableList()).isEmpty() ? (
-              <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
-            ) : (
-              <ol className='rules-list'>
-                {server.get('rules').map(rule => (
-                  <li key={rule.get('id')}>
-                    <span className='rules-list__text'>{rule.get('text')}</span>
-                  </li>
-                ))}
-              </ol>
-            ))}
+            <p>Your House of Representatives (lower house) member is: </p>
+            <p>Your Senate (upper house) members are: </p> 
           </Section>
 
-          <Section title= 'State Parliment' onOpen={this.handleDomainBlocksOpen}>
-            {domainBlocks.get('isLoading') ? (
-              <>
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='70%' />
-              </>
-            ) : (domainBlocks.get('isAvailable') ? (
-              <>
-                <p><FormattedMessage id='about.domain_blocks.preamble' defaultMessage='Mastodon generally allows you to view content from and interact with users from any other server in the fediverse. These are the exceptions that have been made on this particular server.' /></p>
-
-                <div className='about__domain-blocks'>
-                  {domainBlocks.get('items').map(block => (
-                    <div className='about__domain-blocks__domain' key={block.get('domain')}>
-                      <div className='about__domain-blocks__domain__header'>
-                        <h6><span title={`SHA-256: ${block.get('digest')}`}>{block.get('domain')}</span></h6>
-                        <span className='about__domain-blocks__domain__type' title={intl.formatMessage(severityMessages[block.get('severity')].explanation)}>{intl.formatMessage(severityMessages[block.get('severity')].title)}</span>
-                      </div>
-
-                      <p>{(block.get('comment') || '').length > 0 ? block.get('comment') : <FormattedMessage id='about.domain_blocks.no_reason_available' defaultMessage='Reason not available' />}</p>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
-            ))}
+          <Section title= 'State Parliment'>
+            <p>Your House of Assembly (lower house) members are: </p>
           </Section>
 
         </div>
