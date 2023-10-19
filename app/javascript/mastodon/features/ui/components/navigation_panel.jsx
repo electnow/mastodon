@@ -70,7 +70,7 @@ class NavigationPanel extends Component {
         {signedIn && (
           <>
             <ColumnLink transparent to='/home' icon='home' text={intl.formatMessage(messages.home)} />
-			<ColumnLink transparent to='/home' icon='map-pin' text={intl.formatMessage(messages.electorate)} />
+			      <ColumnLink transparent to='/lists' icon='map-pin' text={intl.formatMessage(messages.electorate)} />
             <ColumnLink transparent to='/notifications' icon={<NotificationsCounterIcon className='column-link__icon' />} text={intl.formatMessage(messages.notifications)} />
             <FollowRequestsColumnLink />
           </>
