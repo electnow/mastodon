@@ -126,17 +126,9 @@ class About extends PureComponent {
 
           <div className='about__meta'>
             <div className='about__meta__column'>
-              <h4><FormattedMessage id='server_banner.administered_by' defaultMessage='Administered by:' /></h4>
+              <h4><FormattedMessage id='server_banner.administered_by' defaultMessage='About:' /></h4>
 
               <Account id={server.getIn(['contact', 'account', 'id'])} size={36} minimal />
-            </div>
-
-            <hr className='about__meta__divider' />
-
-            <div className='about__meta__column'>
-              <h4><FormattedMessage id='about.contact' defaultMessage='Contact:' /></h4>
-
-              {isLoading ? <Skeleton width='10ch' /> : <a className='about__mail' href={`mailto:${server.getIn(['contact', 'email'])}`}>{server.getIn(['contact', 'email'])}</a>}
             </div>
           </div>
 
