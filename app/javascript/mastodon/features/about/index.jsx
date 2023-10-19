@@ -119,9 +119,8 @@ class About extends PureComponent {
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
         <div className='scrollable about'>
           <div className='about__header'>
-            <ServerHeroImage blurhash={server.getIn(['thumbnail', 'blurhash'])} src={server.getIn(['thumbnail', 'url'])} srcSet={server.getIn(['thumbnail', 'versions'])?.map((value, key) => `${value} ${key.replace('@', '')}`).join(', ')} className='about__header__hero' />
             <p>Your Electorate Is:</p>
-            <p><FormattedMessage id='about.powered_by' defaultMessage='Decentralized social media powered by {mastodon}' values={{ mastodon: <a href='https://joinmastodon.org' className='about__mail' target='_blank'>Mastodon</a> }} /></p>
+            <h1>Clark</h1>
           </div>
 
           <div className='about__meta'>
@@ -157,26 +156,14 @@ class About extends PureComponent {
                 dangerouslySetInnerHTML={{ __html: extendedDescription.get('content') }}
               />
             ) : (
-			    <p>Population: </p>
-				<p>Average Age: </p>
-				<p>Population: </p>
-				<p>Employment Percent: </p>
-				<p>Most Common Occupation: </p>
-				<p>Most Common Employment Industry: </p>
-				<p>Most Common Education Level: </p>
-				<p>Average Family Income: </p>
-				<p>Most Common Country of Birth: </p>
-				<p>Most Common Parental Country of Birth: </p> 
-				<p>Percent English Speaking: </p> 
-				<p>Most Common Religion: </p> 
+
 				<p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
             ))}
           </Section>
 
           <Section title='Federal Parliment'>
             {!isLoading && (server.get('rules', ImmutableList()).isEmpty() ? (
-			    <p>Your House of Representatives (lower house) member is: </p>
-				<p>Your Senate (upper house) members are: </p> 
+
 				<p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
             ) : (
               <ol className='rules-list'>
@@ -214,7 +201,7 @@ class About extends PureComponent {
                 </div>
               </>
             ) : (
-				<p>Your House of Assembly (lower house) members are: </p>
+
               <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
             ))}
           </Section>
