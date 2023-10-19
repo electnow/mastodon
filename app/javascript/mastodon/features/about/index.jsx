@@ -120,7 +120,7 @@ class About extends PureComponent {
         <div className='scrollable about'>
           <div className='about__header'>
             <p>Your electorate is: </p>
-            <h1 style="color:classic-highlight-color;">Clark</h1>
+            <h1>Clark</h1>
           </div>
 
 
