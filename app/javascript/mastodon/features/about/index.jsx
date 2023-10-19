@@ -125,6 +125,7 @@ class About extends PureComponent {
 
 
           <Section open title={intl.formatMessage(messages.title)}>
+            {
             <p>Population: </p>
             <p>Average Age: </p>
             <p>Population: </p>
@@ -137,15 +138,20 @@ class About extends PureComponent {
             <p>Most Common Parental Country of Birth: </p> 
             <p>Percent English Speaking: </p> 
             <p>Most Common Religion: </p> 
+            }
           </Section>
 
           <Section title='Federal Parliment'>
+            {
             <p>Your House of Representatives (lower house) member is: </p>
             <p>Your Senate (upper house) members are: </p> 
+            }
           </Section>
 
           <Section title= 'State Parliment'>
+            {
             <p>Your House of Assembly (lower house) members are: </p>
+            }
           </Section>
 
         </div>
