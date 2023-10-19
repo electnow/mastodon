@@ -78,7 +78,7 @@ class LinkFooter extends PureComponent {
         </p>
 
         <p>
-          <a href="https://github.com/electnow/mastodon/issues" rel='noopener noreferrer' target='_blank'><FormattedMessage id='footer.source_code' defaultMessage='Report Issues/Suggestions' /></a>
+          <a href="https://github.com/electnow/mastodon/issues" rel='noopener noreferrer' target='_blank'><FormattedMessage id='footer.issues' defaultMessage='Report Issues/Suggestions' /></a>
         </p>
       </div>
     );
