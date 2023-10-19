@@ -123,13 +123,6 @@ class About extends PureComponent {
             <h1>Clark</h1>
           </div>
 
-          <div className='about__meta'>
-            <div className='about__meta__column'>
-              <h4><FormattedMessage id='server_banner.administered_by' defaultMessage='Your Electorate Is:' /></h4>
-              <h1><FormattedMessage id='about.contact' defaultMessage='Clark' /></h1>
-            </div>
-          </div>
-
           <Section open title={intl.formatMessage(messages.title)}>
             {extendedDescription.get('isLoading') ? (
               <>
@@ -192,7 +185,7 @@ class About extends PureComponent {
                 </div>
               </>
             ) : (
-
+              <p>Your House of Assembly (lower house) members are: </p>
               <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
             ))}
           </Section>
