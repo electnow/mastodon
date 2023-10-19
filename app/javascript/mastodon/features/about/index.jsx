@@ -19,9 +19,9 @@ import Account from 'mastodon/containers/account_container';
 import LinkFooter from 'mastodon/features/ui/components/link_footer';
 
 const messages = defineMessages({
-  title: { id: 'column.about', defaultMessage: 'About' },
-  rules: { id: 'about.rules', defaultMessage: 'Server rules' },
-  blocks: { id: 'about.blocks', defaultMessage: 'Moderated servers' },
+  title: { id: 'column.about', defaultMessage: 'Federal Parliment' },
+  rules: { id: 'about.rules', defaultMessage: 'State Parliment' },
+  blocks: { id: 'about.blocks', defaultMessage: 'Local Parliment' },
   silenced: { id: 'about.domain_blocks.silenced.title', defaultMessage: 'Limited' },
   silencedExplanation: { id: 'about.domain_blocks.silenced.explanation', defaultMessage: 'You will generally not see profiles and content from this server, unless you explicitly look it up or opt into it by following.' },
   suspended: { id: 'about.domain_blocks.suspended.title', defaultMessage: 'Suspended' },
@@ -204,11 +204,6 @@ class About extends PureComponent {
             ))}
           </Section>
 
-          <LinkFooter />
-
-          <div className='about__footer'>
-            <p><FormattedMessage id='about.disclaimer' defaultMessage='Mastodon is free, open-source software, and a trademark of Mastodon gGmbH.' /></p>
-          </div>
         </div>
 
         <Helmet>
