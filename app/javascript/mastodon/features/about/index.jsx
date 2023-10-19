@@ -120,7 +120,7 @@ class About extends PureComponent {
         <div className='scrollable about'>
           <div className='about__header'>
             <ServerHeroImage blurhash={server.getIn(['thumbnail', 'blurhash'])} src={server.getIn(['thumbnail', 'url'])} srcSet={server.getIn(['thumbnail', 'versions'])?.map((value, key) => `${value} ${key.replace('@', '')}`).join(', ')} className='about__header__hero' />
-            <h1>{isLoading ? <Skeleton width='10ch' /> : server.get('domain')}</h1>
+            <p>Your Electorate Is:</p>
             <p><FormattedMessage id='about.powered_by' defaultMessage='Decentralized social media powered by {mastodon}' values={{ mastodon: <a href='https://joinmastodon.org' className='about__mail' target='_blank'>Mastodon</a> }} /></p>
           </div>
 
@@ -173,7 +173,7 @@ class About extends PureComponent {
             ))}
           </Section>
 
-          <Section title={intl.formatMessage(messages.rules)}>
+          <Section title='Federal Parliment'>
             {!isLoading && (server.get('rules', ImmutableList()).isEmpty() ? (
 			    <p>Your House of Representatives (lower house) member is: </p>
 				<p>Your Senate (upper house) members are: </p> 
@@ -189,7 +189,7 @@ class About extends PureComponent {
             ))}
           </Section>
 
-          <Section title={intl.formatMessage(messages.blocks)} onOpen={this.handleDomainBlocksOpen}>
+          <Section title='State Parliment'>
             {domainBlocks.get('isLoading') ? (
               <>
                 <Skeleton width='100%' />
