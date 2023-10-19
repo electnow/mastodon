@@ -20,8 +20,8 @@ import LinkFooter from 'mastodon/features/ui/components/link_footer';
 
 const messages = defineMessages({
   title: { id: 'column.about', defaultMessage: 'Census Information' },
-  rules: { id: 'about.rules', defaultMessage: 'State Parliment' },
-  blocks: { id: 'about.blocks', defaultMessage: 'Local Parliment' },
+  rules: { id: 'about.rules', defaultMessage: 'Federal Parliment' },
+  blocks: { id: 'about.blocks', defaultMessage: 'State Parliment' },
   silenced: { id: 'about.domain_blocks.silenced.title', defaultMessage: 'Limited' },
   silencedExplanation: { id: 'about.domain_blocks.silenced.explanation', defaultMessage: 'You will generally not see profiles and content from this server, unless you explicitly look it up or opt into it by following.' },
   suspended: { id: 'about.domain_blocks.suspended.title', defaultMessage: 'Suspended' },
@@ -119,7 +119,8 @@ class About extends PureComponent {
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
         <div className='scrollable about'>
           <div className='about__header'>
-            <h1>'Your electorate is: '</h1>
+            <p>Your electorate is: </p>
+            <h1>Clark</h1>
           </div>
 
 
@@ -144,7 +145,7 @@ class About extends PureComponent {
             ))}
           </Section>
 
-          <Section title={intl.formatMessage(messages.rules)}>
+          <Section title='Federal Parliment'>
             {!isLoading && (server.get('rules', ImmutableList()).isEmpty() ? (
               <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
             ) : (
@@ -158,7 +159,7 @@ class About extends PureComponent {
             ))}
           </Section>
 
-          <Section title={intl.formatMessage(messages.blocks)} onOpen={this.handleDomainBlocksOpen}>
+          <Section title= 'State Parliment' onOpen={this.handleDomainBlocksOpen}>
             {domainBlocks.get('isLoading') ? (
               <>
                 <Skeleton width='100%' />
