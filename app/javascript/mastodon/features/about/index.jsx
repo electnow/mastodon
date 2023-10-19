@@ -19,7 +19,7 @@ import Account from 'mastodon/containers/account_container';
 import LinkFooter from 'mastodon/features/ui/components/link_footer';
 
 const messages = defineMessages({
-  title: { id: 'column.about', defaultMessage: 'Federal Parliment' },
+  title: { id: 'column.about', defaultMessage: 'Census Information' },
   rules: { id: 'about.rules', defaultMessage: 'State Parliment' },
   blocks: { id: 'about.blocks', defaultMessage: 'Local Parliment' },
   silenced: { id: 'about.domain_blocks.silenced.title', defaultMessage: 'Limited' },
@@ -119,18 +119,9 @@ class About extends PureComponent {
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
         <div className='scrollable about'>
           <div className='about__header'>
-            <ServerHeroImage blurhash={server.getIn(['thumbnail', 'blurhash'])} src={server.getIn(['thumbnail', 'url'])} srcSet={server.getIn(['thumbnail', 'versions'])?.map((value, key) => `${value} ${key.replace('@', '')}`).join(', ')} className='about__header__hero' />
-            <h1>{isLoading ? <Skeleton width='10ch' /> : server.get('domain')}</h1>
-            <p><FormattedMessage id='about.powered_by' defaultMessage='Decentralized social media powered by {mastodon}' values={{ mastodon: <a href='https://joinmastodon.org' className='about__mail' target='_blank'>Mastodon</a> }} /></p>
+            <h1>'Your electorate is: '</h1>
           </div>
 
-          <div className='about__meta'>
-            <div className='about__meta__column'>
-              <h4><FormattedMessage id='server_banner.administered_by' defaultMessage='About:' /></h4>
-
-              <Account id={server.getIn(['contact', 'account', 'id'])} size={36} minimal />
-            </div>
-          </div>
 
           <Section open title={intl.formatMessage(messages.title)}>
             {extendedDescription.get('isLoading') ? (
