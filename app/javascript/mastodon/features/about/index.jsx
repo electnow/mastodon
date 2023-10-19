@@ -124,25 +124,10 @@ class About extends PureComponent {
           </div>
 
           <Section open title={intl.formatMessage(messages.title)}>
-            {extendedDescription.get('isLoading') ? (
-              <>
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='70%' />
-              </>
-            ) : (extendedDescription.get('content')?.length > 0 ? (
-              <div
-                className='prose'
-                dangerouslySetInnerHTML={{ __html: extendedDescription.get('content') }}
-              />
-            ) : (
-
-				<p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
-            ))}
+            (
+            <p><p>Population: </p></p>
+				    <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
+            )}
           </Section>
 
           <Section title='Federal Parliment'>
