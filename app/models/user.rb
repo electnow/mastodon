@@ -41,6 +41,9 @@
 #  role_id                   :bigint(8)
 #  settings                  :text
 #  time_zone                 :string
+#  suburb                    :string
+#  state                     :string
+#  postcode                  :string
 #
 
 class User < ApplicationRecord
