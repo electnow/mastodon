@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     /followed_tags
     /statuses/(*any)
     /deck/(*any)
+    /electorate
   ).freeze
 
   root 'home#index'
