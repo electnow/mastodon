@@ -124,51 +124,43 @@ class About extends PureComponent {
           </div>
 
           <Section open title={intl.formatMessage(messages.title)}>
-				    <p>Population: </p>
+				    <p>Population: 111,750</p>
+            <p>Average Age: 37</p>
+            <p>Employment Percent: 46.94%</p>
+            <p>Most Common Occupation: Professional</p>
+            <p>Most Common Employment Industry: Hospital</p>
+            <p>Most Common Education Level: Year 12</p>
+            <p>Average Family Weekly Income: $1978</p>
+            <p>Most Common Country of Birth: Austrailia</p>
+            <p>Most Common Parental Country of Birth: Austrailia</p> 
+            <p>Percent English Speaking: 76.22%</p> 
+            <p>Most Common Religion: Catholic</p>
           </Section>
 
           <Section title='Federal Parliment'>
-            {!isLoading && (server.get('rules', ImmutableList()).isEmpty() ? (
-
-				<p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
-            ) : (
-              <ol className='rules-list'>
-                {server.get('rules').map(rule => (
-                  <li key={rule.get('id')}>
-                    <span className='rules-list__text'>{rule.get('text')}</span>
-                  </li>
-                ))}
-              </ol>
-            ))}
+            <p>Your House of Representatives (lower house) member is: </p>
+            <p>Andrew Wilkie (Independent)</p>
+            <div></div>
+            <p>Your Senate (upper house) members are: </p> 
+            <p>Wendy Askew (Liberal)</p>
+            <p>Catryna Bilyk (Labor)</p>
+            <p>Carol Brown (Labor)</p>
+            <p>Claire Chandler (Liberal)</p>
+            <p>Richard Colbeck (Liberal)</p>
+            <p>Jonathon Duniam (Liberal)</p>
+            <p>Jacqui Lambie (Jacqui Lambie Network)</p>
+            <p>Nick McKim (Greens)</p>
+            <p>Helen Polley (Labor)</p>
+            <p>Tammy Tyrrell (Jacqui Lambie Network)</p>
           </Section>
-
+            
           <Section title='State Parliment'>
-            {domainBlocks.get('isLoading') ? (
-              <>
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='70%' />
-              </>
-            ) : (domainBlocks.get('isAvailable') ? (
-              <>
-                <p><FormattedMessage id='about.domain_blocks.preamble' defaultMessage='Mastodon generally allows you to view content from and interact with users from any other server in the fediverse. These are the exceptions that have been made on this particular server.' /></p>
-
-                <div className='about__domain-blocks'>
-                  {domainBlocks.get('items').map(block => (
-                    <div className='about__domain-blocks__domain' key={block.get('domain')}>
-                      <div className='about__domain-blocks__domain__header'>
-                        <h6><span title={`SHA-256: ${block.get('digest')}`}>{block.get('domain')}</span></h6>
-                        <span className='about__domain-blocks__domain__type' title={intl.formatMessage(severityMessages[block.get('severity')].explanation)}>{intl.formatMessage(severityMessages[block.get('severity')].title)}</span>
-                      </div>
-
-                      <p>{(block.get('comment') || '').length > 0 ? block.get('comment') : <FormattedMessage id='about.domain_blocks.no_reason_available' defaultMessage='Reason not available' />}</p>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
-            ))}
+            <p>Your House of Assembly (lower house) members are: </p>
+            <p>Vica Bayley (Greens)</p>
+            <p>Ella Haddad (Labor)</p>
+            <p>Kristie Johnston (Independent)</p>
+            <p>Madeleine Ogilvie (Liberal)</p>
+            <p>[Position vacant. Recount 23/10/23]</p>
           </Section>
 
           <LinkFooter />
