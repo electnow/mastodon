@@ -41,12 +41,7 @@ class ServerBanner extends PureComponent {
 
     return (
       <div className='server-banner'>
-        <p>My vote! </p>
-        <p>My voice!</p>
-        <div></div>
-        <p>Making my vote and my voice count.</p>
-        <div></div>
-        <p>You can share what you care about and everyone can join in with you.</p>
+
       </div>
     );
   }
