@@ -1,19 +1,21 @@
-import { Map as ImmutableMap, List as ImmutableList, fromJS } from 'immutable';
-
 import {
-  SERVER_FETCH_REQUEST,
-  SERVER_FETCH_SUCCESS,
-  SERVER_FETCH_FAIL,
-  SERVER_TRANSLATION_LANGUAGES_FETCH_REQUEST,
-  SERVER_TRANSLATION_LANGUAGES_FETCH_SUCCESS,
-  SERVER_TRANSLATION_LANGUAGES_FETCH_FAIL,
+  ELECTORATE_DATA_FETCH_FAIL,
+  ELECTORATE_DATA_FETCH_REQUEST,
+  ELECTORATE_DATA_FETCH_SUCCESS,
+  EXTENDED_DESCRIPTION_FAIL,
   EXTENDED_DESCRIPTION_REQUEST,
   EXTENDED_DESCRIPTION_SUCCESS,
-  EXTENDED_DESCRIPTION_FAIL,
+  SERVER_DOMAIN_BLOCKS_FETCH_FAIL,
   SERVER_DOMAIN_BLOCKS_FETCH_REQUEST,
   SERVER_DOMAIN_BLOCKS_FETCH_SUCCESS,
-  SERVER_DOMAIN_BLOCKS_FETCH_FAIL,
+  SERVER_FETCH_FAIL,
+  SERVER_FETCH_REQUEST,
+  SERVER_FETCH_SUCCESS,
+  SERVER_TRANSLATION_LANGUAGES_FETCH_FAIL,
+  SERVER_TRANSLATION_LANGUAGES_FETCH_REQUEST,
+  SERVER_TRANSLATION_LANGUAGES_FETCH_SUCCESS
 } from 'mastodon/actions/server';
+import { List as ImmutableList, Map as ImmutableMap, fromJS } from 'immutable';
 
 const initialState = ImmutableMap({
   server: ImmutableMap({
@@ -28,6 +30,10 @@ const initialState = ImmutableMap({
     isLoading: false,
     isAvailable: true,
     items: ImmutableList(),
+  }),
+  electorateData: ImmutableMap({
+    isLoading: false,
+    data: ImmutableMap(),
   }),
 });
 
@@ -57,6 +63,12 @@ export default function server(state = initialState, action) {
     return state.setIn(['domainBlocks', 'items'], fromJS(action.blocks)).setIn(['domainBlocks', 'isLoading'], false).setIn(['domainBlocks', 'isAvailable'], action.isAvailable);
   case SERVER_DOMAIN_BLOCKS_FETCH_FAIL:
     return state.setIn(['domainBlocks', 'isLoading'], false);
+  case ELECTORATE_DATA_FETCH_REQUEST:
+    return state.setIn(['electorateData', 'isLoading'], false);
+  case ELECTORATE_DATA_FETCH_SUCCESS:
+    return state.setIn(['electorateData', 'data'], fromJS(action.data)).setIn(['electorateData', 'isLoading'], false);
+  case ELECTORATE_DATA_FETCH_FAIL:
+    return state.setIn(['electorateData', 'data'], {}).setIn(['electorateData', 'isLoading'], false);
   default:
     return state;
   }

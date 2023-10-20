@@ -1,22 +1,19 @@
-import PropTypes from 'prop-types';
-import { PureComponent } from 'react';
+import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
+import { fetchDomainBlocks, fetchElectorateData, fetchExtendedDescription, fetchServer } from 'mastodon/actions/server';
 
-import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
-
-import classNames from 'classnames';
+import Account from 'mastodon/containers/account_container';
+import Column from 'mastodon/components/column';
 import { Helmet } from 'react-helmet';
-
+import { Icon }  from 'mastodon/components/icon';
 import { List as ImmutableList } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { connect } from 'react-redux';
-
-import { fetchServer, fetchExtendedDescription, fetchDomainBlocks  } from 'mastodon/actions/server';
-import Column from 'mastodon/components/column';
-import { Icon  }  from 'mastodon/components/icon';
+import LinkFooter from 'mastodon/features/ui/components/link_footer';
+import PropTypes from 'prop-types';
+import { PureComponent } from 'react';
 import { ServerHeroImage } from 'mastodon/components/server_hero_image';
 import { Skeleton } from 'mastodon/components/skeleton';
-import Account from 'mastodon/containers/account_container';
-import LinkFooter from 'mastodon/features/ui/components/link_footer';
+import classNames from 'classnames';
+import { connect } from 'react-redux';
 
 const messages = defineMessages({
   title: { id: 'column.about', defaultMessage: 'Census Information' },
@@ -44,6 +41,7 @@ const mapStateToProps = state => ({
   server: state.getIn(['server', 'server']),
   extendedDescription: state.getIn(['server', 'extendedDescription']),
   domainBlocks: state.getIn(['server', 'domainBlocks']),
+  electorateData: state.getIn(['server', 'electorateData']),
 });
 
 class Section extends PureComponent {
@@ -90,6 +88,7 @@ class About extends PureComponent {
   static propTypes = {
     server: ImmutablePropTypes.map,
     extendedDescription: ImmutablePropTypes.map,
+    electorateData: ImmutablePropTypes.map,
     domainBlocks: ImmutablePropTypes.contains({
       isLoading: PropTypes.bool,
       isAvailable: PropTypes.bool,
@@ -104,6 +103,7 @@ class About extends PureComponent {
     const { dispatch } = this.props;
     dispatch(fetchServer());
     dispatch(fetchExtendedDescription());
+    dispatch(fetchElectorateData());
   }
 
   handleDomainBlocksOpen = () => {
@@ -112,55 +112,74 @@ class About extends PureComponent {
   };
 
   render () {
-    const { multiColumn, intl, server, extendedDescription, domainBlocks } = this.props;
-    const isLoading = server.get('isLoading');
+    const { multiColumn, intl, server, extendedDescription, electorateData, domainBlocks } = this.props;
 
    return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
         <div className='scrollable about'>
           <div className='about__header'>
             <p>Your Electorate Is:</p>
-            <h1>Clark</h1>
+            <h1>{ electorateData.get('isLoading')? "": electorateData.get("data")?.get("electorate")?.get("name") || ""}</h1>
           </div>
 
           <Section open title={intl.formatMessage(messages.title)}>
-				    <p>Population: 111,750</p>
-            <p>Average Age: 37</p>
-            <p>Employment Percent: 46.94%</p>
-            <p>Most Common Occupation: Professional</p>
-            <p>Most Common Employment Industry: Hospital</p>
-            <p>Most Common Education Level: Year 12</p>
-            <p>Average Family Weekly Income: $1978</p>
-            <p>Most Common Country of Birth: Austrailia</p>
-            <p>Most Common Parental Country of Birth: Austrailia</p> 
-            <p>Percent English Speaking: 76.22%</p> 
-            <p>Most Common Religion: Catholic</p>
+            { electorateData.get('isLoading')? (
+              <>
+                <p>Population: 111,750</p>
+                <p>Average Age: 37</p>
+                <p>Employment Percent: 46.94%</p>
+                <p>Most Common Occupation: Professional</p>
+                <p>Most Common Employment Industry: Hospital</p>
+                <p>Most Common Education Level: Year 12</p>
+                <p>Average Family Weekly Income: $1978</p>
+                <p>Most Common Country of Birth: Austrailia</p>
+                <p>Most Common Parental Country of Birth: Austrailia</p> 
+                <p>Percent English Speaking: 76.22%</p> 
+                <p>Most Common Religion: Catholic</p>
+              </>
+            ) : (
+              electorateData.get("data")?.get("census")?.get("name")
+            )}
           </Section>
 
           <Section title='Federal Parliment'>
-            <p><b>Your House of Representatives (lower house) member is:</b></p>
-            <p>Andrew Wilkie (Independent)</p>
-            <div></div>
-            <p><b>Your Senate (upper house) members are: </b></p> 
-            <p>Wendy Askew (Liberal)</p>
-            <p>Catryna Bilyk (Labor)</p>
-            <p>Carol Brown (Labor)</p>
-            <p>Claire Chandler (Liberal)</p>
-            <p>Richard Colbeck (Liberal)</p>
-            <p>Jonathon Duniam (Liberal)</p>
-            <p>Jacqui Lambie (Jacqui Lambie Network)</p>
-            <p>Nick McKim (Greens)</p>
-            <p>Helen Polley (Labor)</p>
-            <p>Tammy Tyrrell (Jacqui Lambie Network)</p>
+            { electorateData.get('isLoading')? (
+              <>
+                <p><b>Your House of Representatives (lower house) member is:</b></p>
+                <p>Andrew Wilkie (Independent)</p>
+                <div></div>
+                <p><b>Your Senate (upper house) members are: </b></p> 
+                <p>Wendy Askew (Liberal)</p>
+                <p>Catryna Bilyk (Labor)</p>
+                <p>Carol Brown (Labor)</p>
+                <p>Claire Chandler (Liberal)</p>
+                <p>Richard Colbeck (Liberal)</p>
+                <p>Jonathon Duniam (Liberal)</p>
+                <p>Jacqui Lambie (Jacqui Lambie Network)</p>
+                <p>Nick McKim (Greens)</p>
+                <p>Helen Polley (Labor)</p>
+                <p>Tammy Tyrrell (Jacqui Lambie Network)</p>
+              </>
+            ) : (
+              electorateData.get('data')?.federalLeaders
+            )}
+            
           </Section>
             
           <Section title='State Parliment'>
-            <p><b>Your House of Assembly (lower house) members are: </b></p>
-            <p>Vica Bayley (Greens)</p>
-            <p>Ella Haddad (Labor)</p>
-            <p>Kristie Johnston (Independent)</p>
-            <p>Madeleine Ogilvie (Liberal)</p>
-            <p>[Position vacant. Recount 23/10/23]</p>
+            { electorateData.get('isLoading')? (
+              <>
+                <p><b>Your House of Assembly (lower house) members are: </b></p>
+                <p>Vica Bayley (Greens)</p>
+                <p>Ella Haddad (Labor)</p>
+                <p>Kristie Johnston (Independent)</p>
+                <p>Madeleine Ogilvie (Liberal)</p>
+                <p>[Position vacant. Recount 23/10/23]</p>
+              </>
+            ) : (
+              electorateData.get('data')?.stateLeaders
+            )}
+
           </Section>
 
           <LinkFooter />
