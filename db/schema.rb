@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_20_123726) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_20_214912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -432,6 +432,26 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_123726) do
     t.text "public_comment"
     t.boolean "obfuscate", default: false, null: false
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
+  end
+
+  create_table "electorate_census_data", force: :cascade do |t|
+    t.bigint "geography_electorates_id", null: false
+    t.integer "population"
+    t.integer "average_age"
+    t.integer "employment"
+    t.string "most_common_occupation"
+    t.string "most_common_education"
+    t.string "most_common_employment"
+    t.string "most_common_religion"
+    t.string "most_common_birth_country"
+    t.string "most_common_birth_country_parents"
+    t.integer "total_family_income"
+    t.string "mortgage_repayment"
+    t.string "rent_range"
+    t.string "language_proficiency"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["geography_electorates_id"], name: "index_electorate_census_data_on_geography_electorates_id"
   end
 
   create_table "electorate_mappings", force: :cascade do |t|
@@ -1261,6 +1281,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_123726) do
   add_foreign_key "custom_filters", "accounts", on_delete: :cascade
   add_foreign_key "devices", "accounts", on_delete: :cascade
   add_foreign_key "devices", "oauth_access_tokens", column: "access_token_id", on_delete: :cascade
+  add_foreign_key "electorate_census_data", "geography_electorates", column: "geography_electorates_id"
   add_foreign_key "electorate_mappings", "geography_electorates", column: "geography_electorates_id"
   add_foreign_key "electorate_mappings", "geography_states", column: "geography_states_id"
   add_foreign_key "email_domain_blocks", "email_domain_blocks", column: "parent_id", on_delete: :cascade

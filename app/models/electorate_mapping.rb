@@ -13,6 +13,6 @@
 #  updated_at               :datetime         not null
 #
 class ElectorateMapping < ApplicationRecord
-  belongs_to :geography_electorates, class_name: 'Geography::State'
-  belongs_to :geography_states, class_name: 'Geography::Electorate'
+  belongs_to :geography_electorates, class_name: 'Geography::Electorate'
+  belongs_to :geography_states, class_name: 'Geography::State'
 end

@@ -290,6 +290,7 @@ namespace :api, format: false do
 
     resources :media, only: [:create]
     resources :suggestions, only: [:index]
+    resources :electorate, only: [:index]
     resource :instance, only: [:show]
     resources :filters, only: [:index, :create, :show, :update, :destroy] do
       resources :keywords, only: [:index, :create], controller: 'filters/keywords'
