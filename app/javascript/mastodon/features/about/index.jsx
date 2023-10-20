@@ -124,7 +124,7 @@ class About extends PureComponent {
           </div>
 
           <Section open title={intl.formatMessage(messages.title)}>
-				    <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
+				    <p>Population: </p>
           </Section>
 
           <Section title='Federal Parliment'>
