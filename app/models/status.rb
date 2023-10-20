@@ -119,6 +119,7 @@ class Status < ApplicationRecord
   scope :tagged_with_none, lambda { |tag_ids|
     where('NOT EXISTS (SELECT * FROM statuses_tags forbidden WHERE forbidden.status_id = statuses.id AND forbidden.tag_id IN (?))', tag_ids)
   }
+  scope :part_of_electorate, ->(electorate_id) { left_outer_joins(:account).where(accounts: { geography_electorates_id: electorate_id }) }
 
   after_create_commit :trigger_create_webhooks
   after_update_commit :trigger_update_webhooks
