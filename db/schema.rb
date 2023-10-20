@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_17_193915) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_20_123726) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -432,6 +432,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_193915) do
     t.text "public_comment"
     t.boolean "obfuscate", default: false, null: false
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
+  end
+
+  create_table "electorate_mappings", force: :cascade do |t|
+    t.bigint "geography_electorates_id", null: false
+    t.bigint "geography_states_id", null: false
+    t.string "postal_code"
+    t.string "suburb"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["geography_electorates_id"], name: "index_electorate_mappings_on_geography_electorates_id"
+    t.index ["geography_states_id"], name: "index_electorate_mappings_on_geography_states_id"
   end
 
   create_table "email_domain_blocks", force: :cascade do |t|
@@ -1250,6 +1261,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_193915) do
   add_foreign_key "custom_filters", "accounts", on_delete: :cascade
   add_foreign_key "devices", "accounts", on_delete: :cascade
   add_foreign_key "devices", "oauth_access_tokens", column: "access_token_id", on_delete: :cascade
+  add_foreign_key "electorate_mappings", "geography_electorates", column: "geography_electorates_id"
+  add_foreign_key "electorate_mappings", "geography_states", column: "geography_states_id"
   add_foreign_key "email_domain_blocks", "email_domain_blocks", column: "parent_id", on_delete: :cascade
   add_foreign_key "encrypted_messages", "accounts", column: "from_account_id", on_delete: :cascade
   add_foreign_key "encrypted_messages", "devices", on_delete: :cascade

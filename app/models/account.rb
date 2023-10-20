@@ -109,6 +109,7 @@ class Account < ApplicationRecord
   validates :inbox_url, absence: true, if: :local?, on: :create
   validates :shared_inbox_url, absence: true, if: :local?, on: :create
   validates :followers_url, absence: true, if: :local?, on: :create
+  validate :validate_and_set_electorate, unless: :user_admin?
 
   scope :remote, -> { where.not(domain: nil) }
   scope :local, -> { where(domain: nil) }
@@ -161,7 +162,15 @@ class Account < ApplicationRecord
 
   delegate :chosen_languages, to: :user, prefix: false, allow_nil: true
 
+  attr_accessor :state_id # inorder to allow the sign up form to render
+
   update_index('accounts', :self)
+
+  def user_admin?
+    # Access the associated User instance
+    role = user.role
+    role == UserRole.find_by(name: 'Owner') || role == UserRole.find_by(name: 'Admin')
+  end
 
   def local?
     domain.nil?
@@ -502,6 +511,40 @@ class Account < ApplicationRecord
     keypair = OpenSSL::PKey::RSA.new(2048)
     self.private_key = keypair.to_pem
     self.public_key  = keypair.public_key.to_pem
+  end
+
+  def validate_and_set_electorate
+    return if geography_electorates_id.present?
+
+    unless postal_code
+      errors.add(:postal_code, :blank, message: 'Pincode is missing')
+      return false
+    end
+
+    unless state_id
+      errors.add(:state_id, :blank, message: 'State is missing')
+      return false
+    end
+
+    @electorates = ElectorateMapping.where(postal_code: postal_code, geography_states_id: state_id)
+
+    if @electorates.empty?
+      errors.add(:postal_code, :invalid, message: 'Sorry, your pincode is not active')
+
+      return false
+    end
+
+    best_match_electorate = FuzzyMatch.new(@electorates, read: :suburb).find(suburb) { |result| result.score.positive? }
+
+    Rails.logger.debug 'best_match_electorate'
+    Rails.logger.debug best_match_electorate
+
+    unless best_match_electorate
+      errors.add(:suburb, :invalid, message: 'Sorry, we could not locate your electorate from your suburb. Try again with a different name')
+      return false
+    end
+
+    self.geography_electorates_id = best_match_electorate.id
   end
 
   def normalize_domain
