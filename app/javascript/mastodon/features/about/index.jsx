@@ -138,10 +138,10 @@ class About extends PureComponent {
           </Section>
 
           <Section title='Federal Parliment'>
-            <p>Your House of Representatives (lower house) member is: </p>
+            <p><b>Your House of Representatives (lower house) member is:</b></p>
             <p>Andrew Wilkie (Independent)</p>
             <div></div>
-            <p>Your Senate (upper house) members are: </p> 
+            <p><b>Your Senate (upper house) members are: </b></p> 
             <p>Wendy Askew (Liberal)</p>
             <p>Catryna Bilyk (Labor)</p>
             <p>Carol Brown (Labor)</p>
@@ -155,7 +155,7 @@ class About extends PureComponent {
           </Section>
             
           <Section title='State Parliment'>
-            <p>Your House of Assembly (lower house) members are: </p>
+            <p><b>Your House of Assembly (lower house) members are: </b></p>
             <p>Vica Bayley (Greens)</p>
             <p>Ella Haddad (Labor)</p>
             <p>Kristie Johnston (Independent)</p>
