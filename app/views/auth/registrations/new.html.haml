@@ -27,12 +27,17 @@
 
   %h1.title= t("Find Your Electorate")
 
-  .fields-group    
-    = f.input :email, placeholder: t('simple_form.labels.defaults.suburb'), required: true, input_html: { 'aria-label': t('simple_form.labels.defaults.suburb'), autocomplete: 'off' }, hint: false
-  .fields-group   
-    = f.select :email, ["TAS"], {prompt: "Select a state"}, placeholder: t('simple_form.labels.defaults.state'), required: true, input_html: { 'aria-label': t('simple_form.labels.defaults.state'), autocomplete: 'off' }, hint: false
   .fields-group
-    = f.input :email, placeholder: t('simple_form.labels.defaults.postcode'), required: true, input_html: { 'aria-label': t('simple_form.labels.defaults.postcode'), autocomplete: 'off' }, hint: false
+    = f.simple_fields_for :account do |ff|
+      = ff.input :suburb, placeholder: t('simple_form.labels.defaults.suburb'), required: true, input_html: { 'aria-label': t('simple_form.labels.defaults.suburb'), autocomplete: 'off' }, hint: false
+  
+  .fields-group
+    = f.simple_fields_for :account do |ff| 
+      = ff.select :state_id, options_from_collection_for_select(Geography::State.all, 'id', 'name'), {prompt: "Select a state"}, placeholder: t('simple_form.labels.defaults.state'), required: true, input_html: { 'aria-label': t('simple_form.labels.defaults.state'), autocomplete: 'off', value: nil }, hint: false
+    
+  .fields-group
+    = f.simple_fields_for :account do |ff|
+      = ff.input :postal_code, placeholder: t('simple_form.labels.defaults.postcode'), required: true, input_html: { 'aria-label': t('simple_form.labels.defaults.postcode'), autocomplete: 'off' }, hint: false
 
   - if approved_registrations? && @invite.blank?
     %p.lead= t('auth.sign_up.manual_review', domain: site_hostname)

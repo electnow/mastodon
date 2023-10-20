@@ -305,6 +305,7 @@ GEM
     fuubar (2.5.1)
       rspec-core (~> 3.0)
       ruby-progressbar (~> 1.4)
+    fuzzy_match (2.1.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
     haml (6.2.0)
@@ -590,10 +591,6 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.2.6)
-    rgeo (3.0.0)
-    rgeo-activerecord (7.0.1)
-      activerecord (>= 5.0)
-      rgeo (>= 1.0.0)
     rotp (6.2.2)
     rouge (4.1.2)
     rpam2 (4.0.2)
@@ -835,6 +832,7 @@ DEPENDENCIES
   fog-core (<= 2.4.0)
   fog-openstack (~> 0.3)
   fuubar (~> 2.5)
+  fuzzy_match
   haml-rails (~> 2.0)
   haml_lint
   hcaptcha (~> 7.1)
