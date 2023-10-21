@@ -167,6 +167,8 @@ class Account < ApplicationRecord
   update_index('accounts', :self)
 
   def user_admin?
+    return false unless user
+
     # Access the associated User instance
     role = user.role
     role == UserRole.find_by(name: 'Owner') || role == UserRole.find_by(name: 'Admin')

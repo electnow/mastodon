@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_20_214912) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_21_220112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -606,7 +606,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_20_214912) do
   create_table "leader_profiles", force: :cascade do |t|
     t.string "name"
     t.string "note"
-    t.integer "type"
+    t.integer "type_of_leader"
     t.integer "level"
     t.integer "parliament"
     t.bigint "geography_state_id", null: false
