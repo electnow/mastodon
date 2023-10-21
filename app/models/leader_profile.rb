@@ -7,7 +7,7 @@
 #  id                      :bigint(8)        not null, primary key
 #  name                    :string
 #  note                    :string
-#  type                    :integer
+#  type_of_leader          :integer
 #  level                   :integer
 #  parliament              :integer
 #  geography_state_id      :bigint(8)        not null
@@ -22,16 +22,16 @@
 #  updated_at              :datetime         not null
 #
 class LeaderProfile < ApplicationRecord
-  enum type: { senate: 0, house_of_representative: 1, house_of_assembly: 2 }
+  enum type_of_leader: { senate: 0, house_of_representative: 1, house_of_assembly: 2 }
 
   enum level: { lower: 0, upper: 1 }
 
   enum parliament: { federal: 0, state: 1 }
 
-  belongs_to :geography_state, class_name: 'Geography::State'
-  belongs_to :geography_electorate, class_name: 'Geography::Electorate'
-  belongs_to :party
-  belongs_to :account
+  belongs_to :geography_state, class_name: 'Geography::State', optional: true
+  belongs_to :geography_electorate, class_name: 'Geography::Electorate', optional: true
+  belongs_to :party, optional: true
+  belongs_to :account, optional: true
 
   include AccountAvatar
 end
