@@ -1,28 +1,24 @@
-import PropTypes from 'prop-types';
+import { connectTimeline, disconnectTimeline, expandAccountFeaturedTimeline, expandAccountTimeline } from '../../actions/timelines';
+import { fetchAccount, lookupAccount } from '../../actions/accounts';
 
+import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
+import Column from '../ui/components/column';
+import ColumnBackButton from '../../components/column_back_button';
 import { FormattedMessage } from 'react-intl';
-
+import HeaderContainer from './containers/header_container';
 import { List as ImmutableList } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
-import { connect } from 'react-redux';
-
+import LimitedAccountHint from './components/limited_account_hint';
+import { LoadingIndicator } from '../../components/loading_indicator';
+import PropTypes from 'prop-types';
+import StatusList from '../../components/status_list';
 import { TimelineHint } from 'mastodon/components/timeline_hint';
-import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
+import { connect } from 'react-redux';
+import { fetchFeaturedTags } from '../../actions/featured_tags';
+import { getAccountHidden } from 'mastodon/selectors';
 import { me } from 'mastodon/initial_state';
 import { normalizeForLookup } from 'mastodon/reducers/accounts_map';
-import { getAccountHidden } from 'mastodon/selectors';
-
-import { lookupAccount, fetchAccount } from '../../actions/accounts';
-import { fetchFeaturedTags } from '../../actions/featured_tags';
-import { expandAccountFeaturedTimeline, expandAccountTimeline, connectTimeline, disconnectTimeline } from '../../actions/timelines';
-import ColumnBackButton from '../../components/column_back_button';
-import { LoadingIndicator } from '../../components/loading_indicator';
-import StatusList from '../../components/status_list';
-import Column from '../ui/components/column';
-
-import LimitedAccountHint from './components/limited_account_hint';
-import HeaderContainer from './containers/header_container';
 
 const emptyList = ImmutableList();
 

@@ -15,7 +15,7 @@
 #  most_common_religion              :string
 #  most_common_birth_country         :string
 #  most_common_birth_country_parents :string
-#  total_family_income               :integer
+#  total_family_income               :string
 #  mortgage_repayment                :string
 #  rent_range                        :string
 #  language_proficiency              :string
