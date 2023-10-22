@@ -3,10 +3,10 @@ en:
   simple_form:
     hints:
       account:
-        discoverable: Your public posts and profile may be featured or recommended in various areas of Mastodon and your profile may be suggested to other users.
+        discoverable: Your public posts and profile may be featured or recommended in various areas of Electnow and your profile may be suggested to other users.
         display_name: Your full name or your fun name.
         fields: Your homepage, pronouns, age, anything you want.
-        indexable: Your public posts may appear in search results on Mastodon. People who have interacted with your posts may be able to search them regardless.
+        indexable: Your public posts may appear in search results on Electnow. People who have interacted with your posts may be able to search them regardless.
         note: 'You can @mention other people or #hashtags.'
         show_collections: People will be able to browse through your follows and followers. People that you follow will see that you follow them regardless.
         unlocked: People will be able to follow you without requesting approval. Uncheck if you want to review follow requests and chose whether to accept or reject new followers.
@@ -300,7 +300,7 @@ en:
         software_updates:
           all: Notify on all updates
           critical: Notify on critical updates only
-          label: A new Mastodon version is available
+          label: A new Electnow version is available
           none: Never notify of updates (not recommended)
           patch: Notify on bugfix updates
         trending_tag: New trend requires review
