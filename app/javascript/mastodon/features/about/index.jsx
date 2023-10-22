@@ -142,7 +142,7 @@ class About extends PureComponent {
               <p>Most Common Education Level: {electorateDataJSON.census?.most_common_education}</p>
               <p>Average Family Weekly Income: {electorateDataJSON.census?.total_family_income}</p>
               <p>Average Monthly Mortgage Payment: {electorateDataJSON.census?.mortgage_repayment}</p>
-              <p>Average Monthly Rental Cost: {electorateDataJSON.census?.rent_range}</p>
+              <p>Average Weekly Rental Cost: {electorateDataJSON.census?.rent_range}</p>
               <p>Most Common Country of Birth: {electorateDataJSON.census?.most_common_birth_country}</p>
               <p>Most Common Parental Country of Birth: {electorateDataJSON.census?.most_common_birth_country_parents}</p>
               <p>Most Common Religion: {electorateDataJSON.census?.most_common_religion}</p>
@@ -186,11 +186,11 @@ class About extends PureComponent {
             ) : (
               <>
               <p><strong>Your House of Assembly (lower house) member is:</strong></p>
-              {electorateDataJSON.stateLeaders?.[0]?.name}
-              {electorateDataJSON.stateLeaders?.[1]?.name}
-              {electorateDataJSON.stateLeaders?.[2]?.name}
-              {electorateDataJSON.stateLeaders?.[3]?.name}
-              {electorateDataJSON.stateLeaders?.[4]?.name}
+              <p>{electorateDataJSON.stateLeaders?.[0]?.name}</p>
+              <p>{electorateDataJSON.stateLeaders?.[1]?.name}</p>
+              <p>{electorateDataJSON.stateLeaders?.[2]?.name}</p>
+              <p>{electorateDataJSON.stateLeaders?.[3]?.name}</p>
+              <p>{electorateDataJSON.stateLeaders?.[4]?.name}</p>
               </>
             )}
 
