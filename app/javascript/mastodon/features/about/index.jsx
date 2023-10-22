@@ -161,7 +161,7 @@ class About extends PureComponent {
               <p><strong>Your House of Representatives (lower house) member is:</strong></p>
               <p>{electorateDataJSON.federalLeaders?.[0]?.name}</p>
               <p><br></br><strong>Your Senate (upper house) members are: </strong></p> 
-              <p>{electorateDataJSON.federalLeaders?.[1]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[1]?.name}</p>
               <p>{electorateDataJSON.federalLeaders?.[2]?.name}</p>
               <p>{electorateDataJSON.federalLeaders?.[3]?.name}</p>
               <p>{electorateDataJSON.federalLeaders?.[4]?.name}</p>
