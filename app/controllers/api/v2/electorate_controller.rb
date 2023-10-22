@@ -7,7 +7,6 @@ class Api::V2::ElectorateController < Api::BaseController
     @electorate = {}
     @census_data = {}
     @federal_leaders = {}
-    @federal_sen_leaders = {}
     @state_leaders = {}
 
     if @current_user.account.geography_electorates_id
