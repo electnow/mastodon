@@ -114,12 +114,16 @@ class About extends PureComponent {
   render () {
     const { multiColumn, intl, server, extendedDescription, electorateData, domainBlocks } = this.props;
 
-   return (
+    let electorateDataJSON = {};
+    if(!electorateData.get('isLoading')){
+      electorateDataJSON = electorateData.toJS().data;
+    }
+    return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
         <div className='scrollable about'>
           <div className='about__header'>
             <p>Your Electorate Is:</p>
-            <h1>{ electorateData.get('isLoading')? "": electorateData.get("data")?.get("electorate")?.get("name") || ""}</h1>
+            <h1>{ electorateData.get('isLoading')? "": electorateDataJSON.electorate?.name || ""}</h1>
           </div>
 
           <Section open title={intl.formatMessage(messages.title)}>
@@ -138,7 +142,7 @@ class About extends PureComponent {
                 <p>Most Common Religion: Catholic</p>
               </>
             ) : (
-              electorateData.get("data")?.get("census")?.get("name")
+              <p>{electorateDataJSON.census?.most_common_employment}</p>
             )}
           </Section>
 
@@ -161,7 +165,7 @@ class About extends PureComponent {
                 <p>Tammy Tyrrell (Jacqui Lambie Network)</p>
               </>
             ) : (
-              electorateData.get('data')?.federalLeaders
+              electorateDataJSON.federalLeaders?.[0]?.name
             )}
             
           </Section>
@@ -177,7 +181,7 @@ class About extends PureComponent {
                 <p>[Position vacant. Recount 23/10/23]</p>
               </>
             ) : (
-              electorateData.get('data')?.stateLeaders
+              electorateDataJSON.stateLeaders?.[0]?.name
             )}
 
           </Section>
