@@ -135,7 +135,7 @@ class About extends PureComponent {
               <>
               <p>Population: {electorateDataJSON.census?.population}</p>
               <p>Average Age: {electorateDataJSON.census?.average_age}</p>
-              <p>Employment Percent: {electorateDataJSON.census?.employment}</p>
+              <p>Employment Percent: {electorateDataJSON.census?.employment / electorateDataJSON.census?.population * 100}%</p>
               <p>Most Common Employment Industry: {electorateDataJSON.census?.most_common_employment}</p>
               <p>Most Common Occupation: {electorateDataJSON.census?.most_common_occupation}</p>
               <p>Most Common Education Level: {electorateDataJSON.census?.most_common_education}</p>
