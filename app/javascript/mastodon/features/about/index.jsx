@@ -159,20 +159,20 @@ class About extends PureComponent {
             ) : (
               <>
               <p><strong>Your House of Representatives (lower house) member is:</strong></p>
-              <p>{electorateDataJSON.federalLeaders?.[0]?.name}</p>
+              <p>{electorateDataJSON.federalHorLeaders?.[0]?.name}</p>
               <p><br></br><strong>Your Senate (upper house) members are: </strong></p> 
-              <p>{electorateDataJSON.federalSenateLeaders?.[1]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[2]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[3]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[4]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[5]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[6]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[7]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[8]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[9]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[10]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[11]?.name}</p>
-              <p>{electorateDataJSON.federalLeaders?.[12]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[0]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[2]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[3]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[4]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[5]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[6]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[7]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[8]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[9]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[10]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[11]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[12]?.name}</p>
               </>
             )}
             
