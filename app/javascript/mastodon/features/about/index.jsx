@@ -129,20 +129,20 @@ class About extends PureComponent {
           <Section open title={intl.formatMessage(messages.title)}>
             { electorateData.get('isLoading')? (
               <>
-                <p>Population: 111,750</p>
-                <p>Average Age: 37</p>
-                <p>Employment Percent: 46.94%</p>
-                <p>Most Common Occupation: Professional</p>
-                <p>Most Common Employment Industry: Hospital</p>
-                <p>Most Common Education Level: Year 12</p>
-                <p>Average Family Weekly Income: $1978</p>
-                <p>Most Common Country of Birth: Austrailia</p>
-                <p>Most Common Parental Country of Birth: Austrailia</p> 
-                <p>Percent English Speaking: 76.22%</p> 
-                <p>Most Common Religion: Catholic</p>
+                <p></p>
               </>
             ) : (
-              <p>{electorateDataJSON.census?.most_common_employment}</p>
+              <p>Population: {electorateDataJSON.census?.population}</p>
+              <p>Average Age: {electorateDataJSON.census?.population}</p>
+              <p>Employment Percent: {electorateDataJSON.census?.population}</p>
+              <p>Most Common Employment Industry: {electorateDataJSON.census?.most_common_employment}</p>
+              <p>Most Common Occupation: {electorateDataJSON.census?.population}</p>
+              <p>Most Common Education Level: {electorateDataJSON.census?.population}</p>
+              <p>Average Family Weekly Income: {electorateDataJSON.census?.population}</p>
+              <p>Most Common Country of Birth: {electorateDataJSON.census?.population}</p>
+              <p>Most Common Parental Country of Birth: {electorateDataJSON.census?.population}</p>
+              <p>Percent English Speaking: {electorateDataJSON.census?.population}</p>
+              <p>Most Common Religion: {electorateDataJSON.census?.population}</p>
             )}
           </Section>
 
