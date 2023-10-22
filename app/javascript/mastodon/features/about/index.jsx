@@ -132,6 +132,7 @@ class About extends PureComponent {
                 <p></p>
               </>
             ) : (
+              <>
               <p>Population: {electorateDataJSON.census?.population}</p>
               <p>Average Age: {electorateDataJSON.census?.population}</p>
               <p>Employment Percent: {electorateDataJSON.census?.population}</p>
@@ -143,29 +144,22 @@ class About extends PureComponent {
               <p>Most Common Parental Country of Birth: {electorateDataJSON.census?.population}</p>
               <p>Percent English Speaking: {electorateDataJSON.census?.population}</p>
               <p>Most Common Religion: {electorateDataJSON.census?.population}</p>
+              </>
             )}
           </Section>
 
           <Section title='Federal Parliment'>
             { electorateData.get('isLoading')? (
               <>
-                <p><b>Your House of Representatives (lower house) member is:</b></p>
-                <p>Andrew Wilkie (Independent)</p>
-                <div></div>
-                <p><b>Your Senate (upper house) members are: </b></p> 
-                <p>Wendy Askew (Liberal)</p>
-                <p>Catryna Bilyk (Labor)</p>
-                <p>Carol Brown (Labor)</p>
-                <p>Claire Chandler (Liberal)</p>
-                <p>Richard Colbeck (Liberal)</p>
-                <p>Jonathon Duniam (Liberal)</p>
-                <p>Jacqui Lambie (Jacqui Lambie Network)</p>
-                <p>Nick McKim (Greens)</p>
-                <p>Helen Polley (Labor)</p>
-                <p>Tammy Tyrrell (Jacqui Lambie Network)</p>
+                <p></p>
+                
               </>
             ) : (
+              <>
+              <p><strong>Your House of Representatives (lower house) member is:</strong></p>
               electorateDataJSON.federalLeaders?.[0]?.name
+              <p><br></br><strong>Your Senate (upper house) members are: </strong></p> 
+              </>
             )}
             
           </Section>
@@ -173,15 +167,13 @@ class About extends PureComponent {
           <Section title='State Parliment'>
             { electorateData.get('isLoading')? (
               <>
-                <p><b>Your House of Assembly (lower house) members are: </b></p>
-                <p>Vica Bayley (Greens)</p>
-                <p>Ella Haddad (Labor)</p>
-                <p>Kristie Johnston (Independent)</p>
-                <p>Madeleine Ogilvie (Liberal)</p>
-                <p>[Position vacant. Recount 23/10/23]</p>
+                <p></p>
               </>
             ) : (
+              <>
+              <p><strong>Your House of Assembly (lower house) members are: </strong></p>
               electorateDataJSON.stateLeaders?.[0]?.name
+              </>
             )}
 
           </Section>
