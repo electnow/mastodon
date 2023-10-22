@@ -1,26 +1,24 @@
+import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
+import { fetchDomainBlocks, fetchElectorateData, fetchExtendedDescription, fetchServer } from 'mastodon/actions/server';
+
+import Account from 'mastodon/containers/account_container';
+import Column from 'mastodon/components/column';
+import { Helmet } from 'react-helmet';
+import { Icon }  from 'mastodon/components/icon';
+import { List as ImmutableList } from 'immutable';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import LinkFooter from 'mastodon/features/ui/components/link_footer';
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
-
-import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
-
-import classNames from 'classnames';
-import { Helmet } from 'react-helmet';
-
-import ImmutablePropTypes from 'react-immutable-proptypes';
-import { connect } from 'react-redux';
-
-import { fetchServer, fetchExtendedDescription, fetchDomainBlocks  } from 'mastodon/actions/server';
-import Column from 'mastodon/components/column';
-import { Icon  }  from 'mastodon/components/icon';
 import { ServerHeroImage } from 'mastodon/components/server_hero_image';
 import { Skeleton } from 'mastodon/components/skeleton';
-import Account from 'mastodon/containers/account_container';
-import LinkFooter from 'mastodon/features/ui/components/link_footer';
+import classNames from 'classnames';
+import { connect } from 'react-redux';
 
 const messages = defineMessages({
-  title: { id: 'column.about', defaultMessage: 'About' },
-  rules: { id: 'about.rules', defaultMessage: 'Server rules' },
-  blocks: { id: 'about.blocks', defaultMessage: 'Moderated servers' },
+  title: { id: 'column.about', defaultMessage: 'Census Information' },
+  rules: { id: 'about.rules', defaultMessage: 'Federal Parliment' },
+  blocks: { id: 'about.blocks', defaultMessage: 'State Parliment' },
   silenced: { id: 'about.domain_blocks.silenced.title', defaultMessage: 'Limited' },
   silencedExplanation: { id: 'about.domain_blocks.silenced.explanation', defaultMessage: 'You will generally not see profiles and content from this server, unless you explicitly look it up or opt into it by following.' },
   suspended: { id: 'about.domain_blocks.suspended.title', defaultMessage: 'Suspended' },
@@ -43,6 +41,7 @@ const mapStateToProps = state => ({
   server: state.getIn(['server', 'server']),
   extendedDescription: state.getIn(['server', 'extendedDescription']),
   domainBlocks: state.getIn(['server', 'domainBlocks']),
+  electorateData: state.getIn(['server', 'electorateData']),
 });
 
 class Section extends PureComponent {
@@ -89,6 +88,7 @@ class About extends PureComponent {
   static propTypes = {
     server: ImmutablePropTypes.map,
     extendedDescription: ImmutablePropTypes.map,
+    electorateData: ImmutablePropTypes.map,
     domainBlocks: ImmutablePropTypes.contains({
       isLoading: PropTypes.bool,
       isAvailable: PropTypes.bool,
@@ -103,6 +103,7 @@ class About extends PureComponent {
     const { dispatch } = this.props;
     dispatch(fetchServer());
     dispatch(fetchExtendedDescription());
+    dispatch(fetchElectorateData());
   }
 
   handleDomainBlocksOpen = () => {
@@ -111,103 +112,92 @@ class About extends PureComponent {
   };
 
   render () {
-    const { multiColumn, intl, server, extendedDescription, domainBlocks } = this.props;
-    const isLoading = server.get('isLoading');
+    const { multiColumn, intl, server, extendedDescription, electorateData, domainBlocks } = this.props;
 
+    let electorateDataJSON = {};
+    if(!electorateData.get('isLoading')){
+      electorateDataJSON = electorateData.toJS().data;
+    }
     return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
         <div className='scrollable about'>
           <div className='about__header'>
-            <ServerHeroImage blurhash={server.getIn(['thumbnail', 'blurhash'])} src={server.getIn(['thumbnail', 'url'])} srcSet={server.getIn(['thumbnail', 'versions'])?.map((value, key) => `${value} ${key.replace('@', '')}`).join(', ')} className='about__header__hero' />
-            <h1>{isLoading ? <Skeleton width='10ch' /> : server.get('domain')}</h1>
-            <p><FormattedMessage id='about.powered_by' defaultMessage='Decentralized social media powered by {mastodon}' values={{ mastodon: <a href='https://joinmastodon.org' className='about__mail' target='_blank'>Mastodon</a> }} /></p>
-          </div>
-
-          <div className='about__meta'>
-            <div className='about__meta__column'>
-              <h4><FormattedMessage id='server_banner.administered_by' defaultMessage='Administered by:' /></h4>
-
-              <Account id={server.getIn(['contact', 'account', 'id'])} size={36} minimal />
-            </div>
-
-            <hr className='about__meta__divider' />
-
-            <div className='about__meta__column'>
-              <h4><FormattedMessage id='about.contact' defaultMessage='Contact:' /></h4>
-
-              {isLoading ? <Skeleton width='10ch' /> : <a className='about__mail' href={`mailto:${server.getIn(['contact', 'email'])}`}>{server.getIn(['contact', 'email'])}</a>}
-            </div>
+            <p>Your Electorate Is:</p>
+            <h1>{ electorateData.get('isLoading')? "": electorateDataJSON.electorate?.name || ""}</h1>
           </div>
 
           <Section open title={intl.formatMessage(messages.title)}>
-            {extendedDescription.get('isLoading') ? (
+            { electorateData.get('isLoading')? (
               <>
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='70%' />
+                <p></p>
               </>
-            ) : (extendedDescription.get('content')?.length > 0 ? (
-              <div
-                className='prose'
-                dangerouslySetInnerHTML={{ __html: extendedDescription.get('content') }}
-              />
             ) : (
-              <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
-            ))}
+              <>
+              <p>Population: {electorateDataJSON.census?.population}</p>
+              <p>Average Age: {electorateDataJSON.census?.average_age}</p>
+              <p>Population Employed: {electorateDataJSON.census?.employment}</p>
+              <p>Population English Speaking: {electorateDataJSON.census?.language_proficiency}</p>
+              <p>Most Common Employment Industry: {electorateDataJSON.census?.most_common_employment}</p>
+              <p>Most Common Occupation: {electorateDataJSON.census?.most_common_occupation}</p>
+              <p>Most Common Education Level: {electorateDataJSON.census?.most_common_education}</p>
+              <p>Average Family Weekly Income: {electorateDataJSON.census?.total_family_income}</p>
+              <p>Average Monthly Mortgage Payment: {electorateDataJSON.census?.mortgage_repayment}</p>
+              <p>Average Weekly Rental Cost: {electorateDataJSON.census?.rent_range}</p>
+              <p>Most Common Country of Birth: {electorateDataJSON.census?.most_common_birth_country}</p>
+              <p>Most Common Parental Country of Birth: {electorateDataJSON.census?.most_common_birth_country_parents}</p>
+              <p>Most Common Religion: {electorateDataJSON.census?.most_common_religion}</p>
+              </>
+            )}
           </Section>
 
-          <Section title={intl.formatMessage(messages.rules)}>
-            {!isLoading && (server.get('rules', []).isEmpty() ? (
-              <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
+          <Section title='Federal Parliment'>
+            { electorateData.get('isLoading')? (
+              <>
+                <p></p>
+                
+              </>
             ) : (
-              <ol className='rules-list'>
-                {server.get('rules').map(rule => (
-                  <li key={rule.get('id')}>
-                    <span className='rules-list__text'>{rule.get('text')}</span>
-                  </li>
-                ))}
-              </ol>
-            ))}
+              <>
+              <p><strong>Your House of Representatives (lower house) member is:</strong></p>
+              <p>{electorateDataJSON.federalHorLeaders?.[0]?.name}</p>
+              <p><br></br><strong>Your Senate (upper house) members are: </strong></p> 
+              <p>{electorateDataJSON.federalSenateLeaders?.[0]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[2]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[3]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[4]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[5]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[6]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[7]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[8]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[9]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[10]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[11]?.name}</p>
+              <p>{electorateDataJSON.federalSenateLeaders?.[12]?.name}</p>
+              </>
+            )}
+            
           </Section>
-
-          <Section title={intl.formatMessage(messages.blocks)} onOpen={this.handleDomainBlocksOpen}>
-            {domainBlocks.get('isLoading') ? (
+            
+          <Section title='State Parliment'>
+            { electorateData.get('isLoading')? (
               <>
-                <Skeleton width='100%' />
-                <br />
-                <Skeleton width='70%' />
-              </>
-            ) : (domainBlocks.get('isAvailable') ? (
-              <>
-                <p><FormattedMessage id='about.domain_blocks.preamble' defaultMessage='Mastodon generally allows you to view content from and interact with users from any other server in the fediverse. These are the exceptions that have been made on this particular server.' /></p>
-
-                <div className='about__domain-blocks'>
-                  {domainBlocks.get('items').map(block => (
-                    <div className='about__domain-blocks__domain' key={block.get('domain')}>
-                      <div className='about__domain-blocks__domain__header'>
-                        <h6><span title={`SHA-256: ${block.get('digest')}`}>{block.get('domain')}</span></h6>
-                        <span className='about__domain-blocks__domain__type' title={intl.formatMessage(severityMessages[block.get('severity')].explanation)}>{intl.formatMessage(severityMessages[block.get('severity')].title)}</span>
-                      </div>
-
-                      <p>{(block.get('comment') || '').length > 0 ? block.get('comment') : <FormattedMessage id='about.domain_blocks.no_reason_available' defaultMessage='Reason not available' />}</p>
-                    </div>
-                  ))}
-                </div>
+                <p></p>
               </>
             ) : (
-              <p><FormattedMessage id='about.not_available' defaultMessage='This information has not been made available on this server.' /></p>
-            ))}
+              <>
+              <p><strong>Your House of Assembly (lower house) member is:</strong></p>
+              <p>{electorateDataJSON.stateLeaders?.[0]?.name}</p>
+              <p>{electorateDataJSON.stateLeaders?.[1]?.name}</p>
+              <p>{electorateDataJSON.stateLeaders?.[2]?.name}</p>
+              <p>{electorateDataJSON.stateLeaders?.[3]?.name}</p>
+              <p>{electorateDataJSON.stateLeaders?.[4]?.name}</p>
+              </>
+            )}
+
           </Section>
 
           <LinkFooter />
 
-          <div className='about__footer'>
-            <p><FormattedMessage id='about.disclaimer' defaultMessage='Mastodon is free, open-source software, and a trademark of Mastodon gGmbH.' /></p>
-          </div>
         </div>
 
         <Helmet>

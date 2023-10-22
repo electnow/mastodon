@@ -28,6 +28,7 @@ class PublicFeed
     scope.merge!(account_filters_scope) if account?
     scope.merge!(media_only_scope) if media_only?
     scope.merge!(language_scope) if account&.chosen_languages.present?
+    scope.merge!(electorate_scope) if account.geography_electorates_id
 
     scope.cache_ids.to_a_paginated_by_id(limit, max_id: max_id, since_id: since_id, min_id: min_id)
   end
@@ -45,11 +46,11 @@ class PublicFeed
   end
 
   def local_only?
-    options[:local]
+    options[:local] && !options[:remote]
   end
 
   def remote_only?
-    options[:remote]
+    options[:remote] && !options[:local]
   end
 
   def account?
@@ -86,6 +87,10 @@ class PublicFeed
 
   def language_scope
     Status.where(language: account.chosen_languages)
+  end
+
+  def electorate_scope
+    Status.part_of_electorate(@account.geography_electorates_id)
   end
 
   def account_filters_scope

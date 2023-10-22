@@ -14,7 +14,7 @@ class Api::V1::Timelines::HomeController < Api::BaseController
     render json: @statuses,
            each_serializer: REST::StatusSerializer,
            relationships: @relationships,
-           status: account_home_feed.regenerating? ? 206 : 200
+           status: 200
   end
 
   private
@@ -37,7 +37,11 @@ class Api::V1::Timelines::HomeController < Api::BaseController
   end
 
   def account_home_feed
-    HomeFeed.new(current_account)
+    # HomeFeed.new(current_account)
+    PublicFeed.new(
+      current_account,
+      local: true
+    )
   end
 
   def insert_pagination_headers

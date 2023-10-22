@@ -3,9 +3,10 @@
 class Feed
   include Redisable
 
-  def initialize(type, id)
+  def initialize(type, id, electorate = nil)
     @type = type
     @id   = id
+    @electorate = electorate
   end
 
   def get(limit, max_id = nil, since_id = nil, min_id = nil)
@@ -28,7 +29,7 @@ class Feed
       unhydrated = redis.zrangebyscore(key, "(#{min_id}", "(#{max_id}", limit: [0, limit], with_scores: true).map(&:first).map(&:to_i)
     end
 
-    Status.where(id: unhydrated).cache_ids
+    @electorate ? Status.part_of_electorate(@electorate).where(id: unhydrated).cache_ids : Status.where(id: unhydrated).cache_ids
   end
 
   def key

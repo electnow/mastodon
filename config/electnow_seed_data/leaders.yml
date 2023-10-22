@@ -1,0 +1,336 @@
+Bridget Archer:
+  state: TAS
+  electorate: Bass
+  parliment: Federal
+  type: HOR
+  level: Lower
+  name: Bridget Archer
+  party: Liberal
+Wendy Askew:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Wendy Askew
+  party: Liberal
+Claire Chandler:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Claire Chandler
+  party: Liberal
+Jacqui Lambie:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Jacqui Lambie
+  party: Jacqui Lambie Network
+Tammy Tyrrell:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Tammy Tyrrell
+  party: Jacqui Lambie Network
+Catryna Bilyk:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Catryna Bilyk
+  party: Labor
+Richard Colbeck:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Richard Colbeck
+  party: Liberal
+Nick McKim:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Nick McKim
+  party: Greens
+Anne Urquhart:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Anne Urquhart
+  party: Labor
+Carol Brown:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Carol Brown
+  party: Labor
+Jonathon Duniam:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Jonathon Duniam
+  party: Liberal
+Helen Polley:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Helen Polley
+  party: Labor
+Peter Whish-Wilson:
+  state: TAS
+  electorate: null
+  parliment: Federal
+  type: SEN
+  level: Upper
+  name: Peter Whish-Wilson
+  party: Greens
+Lara Alexander:
+  state: TAS
+  electorate: Bass
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Lara Alexander
+  party: Independent
+Michelle O''Byrne':
+  state: TAS
+  electorate: Bass
+  parliment: State
+  type: HOA
+  level: Lower
+  name: "Michelle O'Byrne"
+  party: Labor
+Michael Ferguson:
+  state: TAS
+  electorate: Bass
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Michael Ferguson
+  party: Liberal
+Simon Wood:
+  state: TAS
+  electorate: Bass
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Simon Wood
+  party: Liberal
+Janie Finlay:
+  state: TAS
+  electorate: Bass
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Janie Finlay
+  party: Labor
+Gavin Pearce:
+  state: TAS
+  electorate: Braddon
+  parliment: Federal
+  type: HOR
+  level: Lower
+  name: Gavin Pearce
+  party: Liberal
+Shane Broad:
+  state: TAS
+  electorate: Braddon
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Shane Broad
+  party: Labor
+Roge Jaensch:
+  state: TAS
+  electorate: Braddon
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Roge Jaensch
+  party: Liberal
+Anita Dow:
+  state: TAS
+  electorate: Braddon
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Anita Dow
+  party: Labor
+Jeremy Rockliff:
+  state: TAS
+  electorate: Braddon
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Jeremy Rockliff
+  party: Liberal
+Felix Ellis:
+  state: TAS
+  electorate: Braddon
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Felix Ellis
+  party: Liberal
+Andrew Wilkie:
+  state: TAS
+  electorate: Clark
+  parliment: Federal
+  type: HOR
+  level: Lower
+  name: Andrew Wilkie
+  party: Independent
+Vica Bayley:
+  state: TAS
+  electorate: Clark
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Vica Bayley
+  party: Greens
+Madeleine Ogilvie:
+  state: TAS
+  electorate: Clark
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Madeleine Ogilvie
+  party: Liberal
+Ella Haddard:
+  state: TAS
+  electorate: Clark
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Ella Haddard
+  party: Labor
+Vacant Recount - 10/23:
+  state: TAS
+  electorate: Clark
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Vacant Recount - 10/23
+  party: null
+Kristie Johnston:
+  state: TAS
+  electorate: Clark
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Kristie Johnston
+  party: Independent
+Julie Collins:
+  state: TAS
+  electorate: 4
+  parliment: Federal
+  type: HOR
+  level: Lower
+  name: Julie Collins
+  party: Labor
+David O''Byrne':
+  state: TAS
+  electorate: 4
+  parliment: State
+  type: HOA
+  level: Lower
+  name: "David O'Byrne"
+  party: Labor
+Rosalie Woodruff:
+  state: TAS
+  electorate: 4
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Rosalie Woodruff
+  party: Greens
+Nic Street:
+  state: TAS
+  electorate: 4
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Nic Street
+  party: Liberal
+Dean Young:
+  state: TAS
+  electorate: 4
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Dean Young
+  party: Liberal
+Dean Winter:
+  state: TAS
+  electorate: 4
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Dean Winter
+  party: Liberal
+Brian Mitchell:
+  state: TAS
+  electorate: 5
+  parliment: Federal
+  type: HOR
+  level: Lower
+  name: Brian Mitchell
+  party: Labor
+Guy Barnett:
+  state: TAS
+  electorate: 5
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Guy Barnett
+  party: Liberal
+John Tucker:
+  state: TAS
+  electorate: 5
+  parliment: State
+  type: HOA
+  level: Lower
+  name: John Tucker
+  party: Independent
+Jen Butler:
+  state: TAS
+  electorate: 5
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Jen Butler
+  party: Labor
+Rebecca White:
+  state: TAS
+  electorate: 5
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Rebecca White
+  party: Labor
+Mark Shelton:
+  state: TAS
+  electorate: 5
+  parliment: State
+  type: HOA
+  level: Lower
+  name: Mark Shelton
+  party: Liberal

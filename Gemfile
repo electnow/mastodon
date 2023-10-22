@@ -106,11 +106,14 @@ group :test do
   # Used to split testing into chunks in CI
   gem 'rspec_chunked', '~> 0.6'
 
+  # Adds RSpec Error/Warning annotations to GitHub PRs on the Files tab
+  gem 'rspec-github', '~> 2.4', require: false
+
   # RSpec progress bar formatter
   gem 'fuubar', '~> 2.5'
 
   # Extra RSpec extenion methods and helpers for sidekiq
-  gem 'rspec-sidekiq', '~> 3.1'
+  gem 'rspec-sidekiq', '~> 4.0'
 
   # Browser integration testing
   gem 'capybara', '~> 3.39'
@@ -170,12 +173,6 @@ group :development do
   # Linter CLI for HAML files
   gem 'haml_lint', require: false
 
-  # Deployment automation
-  gem 'capistrano', '~> 3.17'
-  gem 'capistrano-rails', '~> 1.6'
-  gem 'capistrano-rbenv', '~> 2.2'
-  gem 'capistrano-yarn', '~> 2.0'
-
   # Validate missing i18n keys
   gem 'i18n-tasks', '~> 1.0', require: false
 end
@@ -204,3 +201,5 @@ gem 'net-http', '~> 0.3.2'
 gem 'rubyzip', '~> 2.3'
 
 gem 'hcaptcha', '~> 7.1'
+
+gem 'fuzzy_match'

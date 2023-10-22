@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_22_122204) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -99,6 +99,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "last_status_at", precision: nil
     t.index ["account_id"], name: "index_account_stats_on_account_id", unique: true
+    t.index ["last_status_at", "account_id"], name: "index_account_stats_on_last_status_at_and_account_id", order: { last_status_at: "DESC NULLS LAST" }
   end
 
   create_table "account_statuses_cleanup_policies", force: :cascade do |t|
@@ -185,9 +186,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.boolean "trendable"
     t.datetime "reviewed_at", precision: nil
     t.datetime "requested_review_at", precision: nil
+    t.boolean "indexable", default: false, null: false
+    t.string "postal_code"
+    t.string "suburb"
+    t.bigint "geography_electorates_id"
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"
+    t.index ["geography_electorates_id"], name: "index_accounts_on_geography_electorates_id"
     t.index ["moved_to_account_id"], name: "index_accounts_on_moved_to_account_id", where: "(moved_to_account_id IS NOT NULL)"
     t.index ["uri"], name: "index_accounts_on_uri"
     t.index ["url"], name: "index_accounts_on_url", opclass: :text_pattern_ops, where: "(url IS NOT NULL)"
@@ -428,6 +434,37 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
   end
 
+  create_table "electorate_census_data", force: :cascade do |t|
+    t.bigint "geography_electorates_id", null: false
+    t.integer "population"
+    t.integer "average_age"
+    t.integer "employment"
+    t.string "most_common_occupation"
+    t.string "most_common_education"
+    t.string "most_common_employment"
+    t.string "most_common_religion"
+    t.string "most_common_birth_country"
+    t.string "most_common_birth_country_parents"
+    t.string "total_family_income"
+    t.string "mortgage_repayment"
+    t.string "rent_range"
+    t.string "language_proficiency"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["geography_electorates_id"], name: "index_electorate_census_data_on_geography_electorates_id"
+  end
+
+  create_table "electorate_mappings", force: :cascade do |t|
+    t.bigint "geography_electorates_id", null: false
+    t.bigint "geography_states_id", null: false
+    t.string "postal_code"
+    t.string "suburb"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["geography_electorates_id"], name: "index_electorate_mappings_on_geography_electorates_id"
+    t.index ["geography_states_id"], name: "index_electorate_mappings_on_geography_states_id"
+  end
+
   create_table "email_domain_blocks", force: :cascade do |t|
     t.string "domain", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
@@ -504,6 +541,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.index ["target_account_id"], name: "index_follows_on_target_account_id"
   end
 
+  create_table "geography_electorates", force: :cascade do |t|
+    t.string "name"
+    t.bigint "geography_state_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["geography_state_id"], name: "index_geography_electorates_on_geography_state_id"
+  end
+
+  create_table "geography_states", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_geography_states_on_code", unique: true
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string "provider", default: "", null: false
     t.string "uid", default: "", null: false
@@ -548,6 +601,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.integer "severity", default: 0, null: false
     t.text "comment", default: "", null: false
     t.index ["ip"], name: "index_ip_blocks_on_ip", unique: true
+  end
+
+  create_table "leader_profiles", force: :cascade do |t|
+    t.string "name"
+    t.string "note"
+    t.integer "type_of_leader"
+    t.integer "level"
+    t.integer "parliament"
+    t.bigint "geography_state_id", null: false
+    t.bigint "geography_electorate_id"
+    t.bigint "party_id"
+    t.bigint "account_id"
+    t.string "avatar_file_name"
+    t.string "avatar_content_type"
+    t.bigint "avatar_file_size"
+    t.datetime "avatar_updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_leader_profiles_on_account_id"
+    t.index ["geography_electorate_id"], name: "index_leader_profiles_on_geography_electorate_id"
+    t.index ["geography_state_id"], name: "index_leader_profiles_on_geography_state_id"
+    t.index ["party_id"], name: "index_leader_profiles_on_party_id"
   end
 
   create_table "list_accounts", force: :cascade do |t|
@@ -714,6 +789,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.index ["key_id"], name: "index_one_time_keys_on_key_id"
   end
 
+  create_table "parties", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "pghero_space_stats", force: :cascade do |t|
     t.text "database"
     t.text "schema"
@@ -809,7 +890,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
   create_table "preview_cards_statuses", primary_key: ["status_id", "preview_card_id"], force: :cascade do |t|
     t.bigint "preview_card_id", null: false
     t.bigint "status_id", null: false
-    t.index ["status_id", "preview_card_id"], name: "index_preview_cards_statuses_on_status_id_and_preview_card_id"
   end
 
   create_table "relays", force: :cascade do |t|
@@ -901,6 +981,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
     t.datetime "updated_at", precision: nil, null: false
     t.string "blurhash"
     t.index ["var"], name: "index_site_uploads_on_var", unique: true
+  end
+
+  create_table "software_updates", force: :cascade do |t|
+    t.string "version", null: false
+    t.boolean "urgent", default: false, null: false
+    t.integer "type", default: 0, null: false
+    t.string "release_notes", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["version"], name: "index_software_updates_on_version", unique: true
   end
 
   create_table "status_edits", force: :cascade do |t|
@@ -1164,6 +1254,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
   add_foreign_key "account_warnings", "accounts", on_delete: :nullify
   add_foreign_key "account_warnings", "reports", on_delete: :cascade
   add_foreign_key "accounts", "accounts", column: "moved_to_account_id", on_delete: :nullify
+  add_foreign_key "accounts", "geography_electorates", column: "geography_electorates_id", on_delete: :cascade
   add_foreign_key "admin_action_logs", "accounts", on_delete: :cascade
   add_foreign_key "announcement_mutes", "accounts", on_delete: :cascade
   add_foreign_key "announcement_mutes", "announcements", on_delete: :cascade
@@ -1190,6 +1281,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
   add_foreign_key "custom_filters", "accounts", on_delete: :cascade
   add_foreign_key "devices", "accounts", on_delete: :cascade
   add_foreign_key "devices", "oauth_access_tokens", column: "access_token_id", on_delete: :cascade
+  add_foreign_key "electorate_census_data", "geography_electorates", column: "geography_electorates_id"
+  add_foreign_key "electorate_mappings", "geography_electorates", column: "geography_electorates_id"
+  add_foreign_key "electorate_mappings", "geography_states", column: "geography_states_id"
   add_foreign_key "email_domain_blocks", "email_domain_blocks", column: "parent_id", on_delete: :cascade
   add_foreign_key "encrypted_messages", "accounts", column: "from_account_id", on_delete: :cascade
   add_foreign_key "encrypted_messages", "devices", on_delete: :cascade
@@ -1202,9 +1296,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
   add_foreign_key "follow_requests", "accounts", name: "fk_76d644b0e7", on_delete: :cascade
   add_foreign_key "follows", "accounts", column: "target_account_id", name: "fk_745ca29eac", on_delete: :cascade
   add_foreign_key "follows", "accounts", name: "fk_32ed1b5560", on_delete: :cascade
+  add_foreign_key "geography_electorates", "geography_states"
   add_foreign_key "identities", "users", name: "fk_bea040f377", on_delete: :cascade
   add_foreign_key "imports", "accounts", name: "fk_6db1b6e408", on_delete: :cascade
   add_foreign_key "invites", "users", on_delete: :cascade
+  add_foreign_key "leader_profiles", "accounts"
+  add_foreign_key "leader_profiles", "geography_electorates"
+  add_foreign_key "leader_profiles", "geography_states"
+  add_foreign_key "leader_profiles", "parties"
   add_foreign_key "list_accounts", "accounts", on_delete: :cascade
   add_foreign_key "list_accounts", "follow_requests", on_delete: :cascade
   add_foreign_key "list_accounts", "follows", on_delete: :cascade
@@ -1331,34 +1430,36 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_112520) do
   SQL
   add_index "account_summaries", ["account_id"], name: "index_account_summaries_on_account_id", unique: true
 
-  create_view "follow_recommendations", materialized: true, sql_definition: <<-SQL
+  create_view "global_follow_recommendations", materialized: true, sql_definition: <<-SQL
       SELECT t0.account_id,
       sum(t0.rank) AS rank,
       array_agg(t0.reason) AS reason
      FROM ( SELECT account_summaries.account_id,
               ((count(follows.id))::numeric / (1.0 + (count(follows.id))::numeric)) AS rank,
               'most_followed'::text AS reason
-             FROM (((follows
+             FROM ((follows
                JOIN account_summaries ON ((account_summaries.account_id = follows.target_account_id)))
                JOIN users ON ((users.account_id = follows.account_id)))
-               LEFT JOIN follow_recommendation_suppressions ON ((follow_recommendation_suppressions.account_id = follows.target_account_id)))
-            WHERE ((users.current_sign_in_at >= (now() - 'P30D'::interval)) AND (account_summaries.sensitive = false) AND (follow_recommendation_suppressions.id IS NULL))
+            WHERE ((users.current_sign_in_at >= (now() - 'P30D'::interval)) AND (account_summaries.sensitive = false) AND (NOT (EXISTS ( SELECT 1
+                     FROM follow_recommendation_suppressions
+                    WHERE (follow_recommendation_suppressions.account_id = follows.target_account_id)))))
             GROUP BY account_summaries.account_id
            HAVING (count(follows.id) >= 5)
           UNION ALL
            SELECT account_summaries.account_id,
               (sum((status_stats.reblogs_count + status_stats.favourites_count)) / (1.0 + sum((status_stats.reblogs_count + status_stats.favourites_count)))) AS rank,
               'most_interactions'::text AS reason
-             FROM (((status_stats
+             FROM ((status_stats
                JOIN statuses ON ((statuses.id = status_stats.status_id)))
                JOIN account_summaries ON ((account_summaries.account_id = statuses.account_id)))
-               LEFT JOIN follow_recommendation_suppressions ON ((follow_recommendation_suppressions.account_id = statuses.account_id)))
-            WHERE ((statuses.id >= (((date_part('epoch'::text, (now() - 'P30D'::interval)) * (1000)::double precision))::bigint << 16)) AND (account_summaries.sensitive = false) AND (follow_recommendation_suppressions.id IS NULL))
+            WHERE ((statuses.id >= (((date_part('epoch'::text, (now() - 'P30D'::interval)) * (1000)::double precision))::bigint << 16)) AND (account_summaries.sensitive = false) AND (NOT (EXISTS ( SELECT 1
+                     FROM follow_recommendation_suppressions
+                    WHERE (follow_recommendation_suppressions.account_id = statuses.account_id)))))
             GROUP BY account_summaries.account_id
            HAVING (sum((status_stats.reblogs_count + status_stats.favourites_count)) >= (5)::numeric)) t0
     GROUP BY t0.account_id
     ORDER BY (sum(t0.rank)) DESC;
   SQL
-  add_index "follow_recommendations", ["account_id"], name: "index_follow_recommendations_on_account_id", unique: true
+  add_index "global_follow_recommendations", ["account_id"], name: "index_global_follow_recommendations_on_account_id", unique: true
 
 end

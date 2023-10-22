@@ -192,6 +192,7 @@ class FeedManager
     # also tagged with another followed hashtag or from a followed user
     scope = from_tag.statuses
                     .where(id: timeline_status_ids)
+                    .where.not(account: into_account)
                     .where.not(account: into_account.following)
                     .tagged_with_none(TagFollow.where(account: into_account).pluck(:tag_id))
 
@@ -262,7 +263,7 @@ class FeedManager
       add_to_feed(:home, account.id, status, aggregate_reblogs: aggregate)
     end
 
-    account.following.includes(:account_stat).find_each do |target_account|
+    Account.where(geography_electorates_id: account.geography_electorates_id).find_each do |target_account|
       if redis.zcard(timeline_key) >= limit
         oldest_home_score = redis.zrange(timeline_key, 0, 0, with_scores: true).first.last.to_i
         last_status_score = Mastodon::Snowflake.id_at(target_account.last_status_at)
@@ -371,10 +372,12 @@ class FeedManager
   # @param [Integer] receiver_id
   # @param [Hash] crutches
   # @return [Boolean]
-  def filter_from_home?(status, receiver_id, crutches, timeline_type = :home)
+  def filter_from_home?(status, receiver_id, crutches, _timeline_type = :home)
     return false if receiver_id == status.account_id
     return true  if status.reply? && (status.in_reply_to_id.nil? || status.in_reply_to_account_id.nil?)
-    return true if timeline_type != :list && crutches[:exclusive_list_users][status.account_id].present?
+    # Removing following check.
+    # return true if timeline_type != :list && crutches[:exclusive_list_users][status.account_id].present?
+
     return true if crutches[:languages][status.account_id].present? && status.language.present? && !crutches[:languages][status.account_id].include?(status.language)
 
     check_for_blocks = crutches[:active_mentions][status.id] || []

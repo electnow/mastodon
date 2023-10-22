@@ -1,0 +1,76 @@
+---
+Electorate_3:
+  electorate: Clark
+  population: 111,750
+  age: 37
+  employment: 52460
+  occupation: Professionals
+  highest year of school completed: Year 12
+  total family Income: $1978 (weekly)
+  mortgage Repayments: $1517 (monthly)
+  rent ranges: $355 (weekly)
+  industry of Employment: Hospitals (except psychiatric hospitals)
+  country of Birth: Australia (top)- China (second)
+  proficiency in Spoken English: Good- 85174 people speak at home
+  country of birth of parents: Australia (top)- overseas (second)
+  religion: Catholic
+Electorate_4:
+  electorate: Franklin
+  population: 111,833
+  age: 41
+  employment: 48987
+  occupation: Professionals
+  highest year of school completed: Year 10
+  total family Income: $1910 (weekly)
+  mortgage Repayments: $1517 (monthly)
+  rent ranges: $350 (weekly)
+  industry of Employment: Hospitals (except psychiatric hospitals)
+  country of Birth: Australia (top)- England (Second)
+  proficiency in Spoken English: Good - 97140 people speak at home
+  country of birth of parents: Australia (top)- overseas (second)
+  religion: Anglican
+Electorate_2:
+  electorate: Braddon
+  population: 109,556
+  age: 45
+  employment: 43928
+  occupation: Technicians and Trades Workers
+  highest year of school completed: Year 10
+  total family Income: $1543 (weekly)
+  mortgage Repayments: $1200 (monthly)
+  rent ranges: $240 (weekly)
+  industry of Employment: Hospitals (except psychiatric hospitals)
+  country of Birth: Australia (top)- England (Second)
+  proficiency in Spoken English: Good- 99113 people speak at home
+  country of birth of parents: Australia (top)- overseas (second)
+  religion: Anglican
+Electorate_5:
+  electorate: Lyons
+  population: 113,067
+  age: 44
+  employment: 46017
+  occupation: Technicians and Trades Workers
+  highest year of school completed: Year 10
+  total family Income: $1547 (weekly)
+  mortgage Repayments: $1300 (monthly)
+  rent ranges: $270 (weekly)
+  industry of Employment: Hospitals (except psychiatric hospitals)
+  country of Birth: Australia (top)- England (Second)
+  proficiency in Spoken English: Good- 102,497 people speak at home
+  country of birth of parents: Australia (top)- overseas (second)
+  religion: Anglican
+Electorate_1:
+  electorate: Bass
+  population: 109,977
+  age: 41
+  employment: 46769
+  occupation: Professionals
+  highest year of school completed: Year 10
+  total family Income: $1638 (weekly)
+  mortgage Repayments: $1300 (monthly)
+  rent ranges: $270 (weekly)
+  industry of Employment: Hospitals (except psychiatric hospitals)
+  country of Birth: Australia (top)- England (Second)
+  proficiency in Spoken English: Good- 94958 people speak at home
+  country of birth of parents: Australia (top)- overseas (second)
+  religion: Anglican

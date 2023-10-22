@@ -1,0 +1,37 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "sidekiq",
+      "cpu": 0,
+      "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-staging:latest",
+      "essential": true,
+      "command": ["bash", "-c", "bundle exec sidekiq"],
+      "environmentFiles": [
+        {
+          "value": "arn:aws:s3:::mastodon-env-files/staging.env",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/electnow-mastodon-staging/sidekiq",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-region": "us-east-1"
+        }
+      }
+    }
+  ],
+  "family": "electnow-mastodon-staging-sidekiq",
+  "taskRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
+  "executionRoleArn": "arn:aws:iam::115278533354:role/ecsTaskRole",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "2048",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  }
+}
