@@ -143,7 +143,7 @@ class About extends PureComponent {
               <p>Most Common Country of Birth: {electorateDataJSON.census?.population}</p>
               <p>Most Common Parental Country of Birth: {electorateDataJSON.census?.population}</p>
               <p>Percent English Speaking: {electorateDataJSON.census?.population}</p>
-              <p>Most Common Religion: {electorateDataJSON.census?.population}</p>
+              <p>Most Common Religion: {electorateDataJSON.census?.most_common_religion}</p>
               </>
             )}
           </Section>
