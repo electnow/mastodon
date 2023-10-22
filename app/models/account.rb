@@ -538,15 +538,12 @@ class Account < ApplicationRecord
 
     best_match_electorate = FuzzyMatch.new(@electorates, read: :suburb).find(suburb) { |result| result.score.positive? }
 
-    Rails.logger.debug 'best_match_electorate'
-    Rails.logger.debug best_match_electorate
-
     unless best_match_electorate
       errors.add(:suburb, :invalid, message: 'Sorry, we could not locate your electorate from your suburb. Try again with a different name')
       return false
     end
 
-    self.geography_electorates_id = best_match_electorate.id
+    self.geography_electorates_id = best_match_electorate.geography_electorates_id
   end
 
   def normalize_domain
