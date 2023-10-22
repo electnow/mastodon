@@ -1,5 +1,5 @@
-name: Bug Report (Web Interface)
-description: If you are using Mastodon's web interface and something is not working as expected
+name: Bug Report
+description: If you are using Electnow's web interface and something is not working as expected
 labels: [bug, 'status/to triage', 'area/web interface']
 body:
   - type: markdown
@@ -38,14 +38,14 @@ body:
       required: false
   - type: input
     attributes:
-      label: Mastodon instance
-      description: The address of the Mastodon instance where you experienced the issue
-      placeholder: mastodon.social
+      label: Electnow instance
+      description: The address of the Electnow instance where you experienced the issue
+      placeholder: Electnow.social
     validations:
       required: true
   - type: input
     attributes:
-      label: Mastodon version
+      label: Electnow version
       description: |
         This is displayed at the bottom of the About page, eg. `v4.1.2+nightly-20230627`
       placeholder: v4.1.2
