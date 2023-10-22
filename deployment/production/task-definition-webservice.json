@@ -2,7 +2,7 @@
   "containerDefinitions": [
     {
       "name": "webservice",
-      "image": "115278533354.dkr.ecr.us-east-1.amazonaws.com/electnow-mastodon-production:latest",
+      "image": "115278533354.dkr.ecr.ap-southeast-2.amazonaws.com/electnow-mastodon-production:latest",
       "cpu": 0,
       "essential": true,
       "command": [
