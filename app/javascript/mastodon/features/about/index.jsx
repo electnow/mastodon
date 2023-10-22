@@ -134,11 +134,11 @@ class About extends PureComponent {
             ) : (
               <>
               <p>Population: {electorateDataJSON.census?.population}</p>
-              <p>Average Age: {electorateDataJSON.census?.population}</p>
-              <p>Employment Percent: {electorateDataJSON.census?.population}</p>
+              <p>Average Age: {electorateDataJSON.census?.average_age}</p>
+              <p>Employment Percent: {electorateDataJSON.census?.average_age}</p>
               <p>Most Common Employment Industry: {electorateDataJSON.census?.most_common_employment}</p>
-              <p>Most Common Occupation: {electorateDataJSON.census?.population}</p>
-              <p>Most Common Education Level: {electorateDataJSON.census?.population}</p>
+              <p>Most Common Occupation: {electorateDataJSON.census?.most_common_occupation}</p>
+              <p>Most Common Education Level: {electorateDataJSON.census?.most_common_education}</p>
               <p>Average Family Weekly Income: {electorateDataJSON.census?.population}</p>
               <p>Most Common Country of Birth: {electorateDataJSON.census?.population}</p>
               <p>Most Common Parental Country of Birth: {electorateDataJSON.census?.population}</p>
@@ -157,7 +157,7 @@ class About extends PureComponent {
             ) : (
               <>
               <p><strong>Your House of Representatives (lower house) member is:</strong></p>
-              electorateDataJSON.federalLeaders?.[0]?.name
+              <p>electorateDataJSON.federalLeaders?.[0]?.name</p>
               <p><br></br><strong>Your Senate (upper house) members are: </strong></p> 
               </>
             )}
@@ -172,7 +172,7 @@ class About extends PureComponent {
             ) : (
               <>
               <p><strong>Your House of Assembly (lower house) members are: </strong></p>
-              electorateDataJSON.stateLeaders?.[0]?.name
+              <p>electorateDataJSON.stateLeaders?.[0]?.name</p>
               </>
             )}
 
