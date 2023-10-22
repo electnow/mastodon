@@ -135,14 +135,16 @@ class About extends PureComponent {
               <>
               <p>Population: {electorateDataJSON.census?.population}</p>
               <p>Average Age: {electorateDataJSON.census?.average_age}</p>
-              <p>Employment Percent: {electorateDataJSON.census?.average_age}</p>
+              <p>Employment Percent: {electorateDataJSON.census?.employment}</p>
               <p>Most Common Employment Industry: {electorateDataJSON.census?.most_common_employment}</p>
               <p>Most Common Occupation: {electorateDataJSON.census?.most_common_occupation}</p>
               <p>Most Common Education Level: {electorateDataJSON.census?.most_common_education}</p>
-              <p>Average Family Weekly Income: {electorateDataJSON.census?.population}</p>
-              <p>Most Common Country of Birth: {electorateDataJSON.census?.population}</p>
-              <p>Most Common Parental Country of Birth: {electorateDataJSON.census?.population}</p>
-              <p>Percent English Speaking: {electorateDataJSON.census?.population}</p>
+              <p>Average Family Weekly Income: {electorateDataJSON.census?.total_family_income}</p>
+              <p>Average Monthly Mortgage Payment: {electorateDataJSON.census?.mortgage_repayment}</p>
+              <p>Average Monthly Rental Cost: {electorateDataJSON.census?.rent_range}</p>
+              <p>Most Common Country of Birth: {electorateDataJSON.census?.most_common_birth_country}</p>
+              <p>Most Common Parental Country of Birth: {electorateDataJSON.census?.most_common_birth_country_parents}</p>
+              <p>Percent English Speaking: {electorateDataJSON.census?.language_proficiency}</p>
               <p>Most Common Religion: {electorateDataJSON.census?.most_common_religion}</p>
               </>
             )}
@@ -157,7 +159,7 @@ class About extends PureComponent {
             ) : (
               <>
               <p><strong>Your House of Representatives (lower house) member is:</strong></p>
-              <p>electorateDataJSON.federalLeaders?.[0]?.name</p>
+              <p>{electorateDataJSON.federalLeaders?.[0]?.name}</p>
               <p><br></br><strong>Your Senate (upper house) members are: </strong></p> 
               </>
             )}
@@ -171,8 +173,8 @@ class About extends PureComponent {
               </>
             ) : (
               <>
-              <p><strong>Your House of Assembly (lower house) members are: </strong></p>
-              <p>electorateDataJSON.stateLeaders?.[0]?.name</p>
+              <p><strong>Your House of Assembly (lower house) member is:</strong></p>
+              {electorateDataJSON.stateLeaders?.[0]?.name}
               </>
             )}
 
